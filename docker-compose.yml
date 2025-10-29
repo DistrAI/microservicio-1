@@ -1,0 +1,102 @@
+version: '3.8'
+
+services:
+  # Base de datos PostgreSQL
+  postgres-db:
+    image: postgres:15-alpine
+    container_name: distrIA-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: distriadb
+      POSTGRES_USER: distriauser
+      POSTGRES_PASSWORD: distriapass123
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-scripts:/docker-entrypoint-initdb.d
+    networks:
+      - distria-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U distriauser -d distriadb"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Aplicación GestorAPI
+  gestor-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: distrIA-gestor-api
+    restart: unless-stopped
+    depends_on:
+      postgres-db:
+        condition: service_healthy
+    environment:
+      # Configuración de base de datos
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-db:5432/distriadb
+      SPRING_DATASOURCE_USERNAME: distriauser
+      SPRING_DATASOURCE_PASSWORD: distriapass123
+      
+      # Configuración JPA
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_SHOW_SQL: true
+      SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.PostgreSQLDialect
+      SPRING_JPA_PROPERTIES_HIBERNATE_FORMAT_SQL: true
+      
+      # Configuración GraphQL
+      SPRING_GRAPHQL_GRAPHIQL_ENABLED: true
+      SPRING_GRAPHQL_GRAPHIQL_PATH: /graphiql
+      
+      # Configuración de seguridad JWT
+      JWT_SECRET: distrIA-super-secret-key-2024-change-in-production
+      JWT_EXPIRATION: 86400000
+      
+      # Configuración de logging
+      LOGGING_LEVEL_COM_SW2: DEBUG
+      LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_SECURITY: DEBUG
+      
+      # Configuración de Actuator
+      MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE: health,info,metrics
+      MANAGEMENT_ENDPOINT_HEALTH_SHOW_DETAILS: always
+    ports:
+      - "8080:8080"
+    volumes:
+      - app_logs:/app/logs
+    networks:
+      - distria-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  # Adminer para administración de base de datos (opcional)
+  adminer:
+    image: adminer:4.8.1
+    container_name: distrIA-adminer
+    restart: unless-stopped
+    depends_on:
+      - postgres-db
+    ports:
+      - "8081:8080"
+    networks:
+      - distria-network
+    environment:
+      ADMINER_DEFAULT_SERVER: postgres-db
+
+# Volúmenes persistentes
+volumes:
+  postgres_data:
+    driver: local
+  app_logs:
+    driver: local
+
+# Red personalizada
+networks:
+  distria-network:
+    driver: bridge
+    name: distria-network

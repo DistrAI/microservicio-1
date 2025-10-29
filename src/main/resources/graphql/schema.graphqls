@@ -1,0 +1,312 @@
+# GraphQL Schema para DistrIA - GestorAPI
+
+# Tipos principales
+type Empresa {
+    id: ID!
+    nombre: String!
+    rucNit: String!
+    email: String
+    telefono: String
+    direccion: String
+    ciudad: String
+    pais: String
+    planSuscripcion: PlanSuscripcion!
+    limiteProductos: Int
+    limiteClientes: Int
+    limiteUsuarios: Int
+    createdAt: String!
+    updatedAt: String!
+}
+
+type Producto {
+    id: ID!
+    nombre: String!
+    descripcion: String
+    sku: String
+    precio: Float!
+    costo: Float
+    stockActual: Int!
+    stockMinimo: Int!
+    unidadMedida: String
+    categoria: String
+    pesoKg: Float
+    imagenUrl: String
+    requiereRefrigeracion: Boolean!
+    esFragil: Boolean!
+    empresa: Empresa!
+    createdAt: String!
+    updatedAt: String!
+}
+
+type Cliente {
+    id: ID!
+    nombre: String!
+    apellido: String!
+    email: String
+    telefono: String
+    documento: String
+    tipoDocumento: TipoDocumento
+    fechaNacimiento: String
+    segmento: SegmentoCliente!
+    preferenciasEntrega: String
+    empresa: Empresa!
+    pedidos: [Pedido!]!
+    direcciones: [Direccion!]!
+    createdAt: String!
+    updatedAt: String!
+}
+
+type Pedido {
+    id: ID!
+    numeroPedido: String!
+    fechaPedido: String!
+    fechaEntregaEstimada: String
+    fechaEntregaReal: String
+    estado: EstadoPedido!
+    subtotal: Float!
+    descuento: Float!
+    costoEnvio: Float!
+    total: Float!
+    observaciones: String
+    metodoPago: MetodoPago
+    prioridad: PrioridadPedido!
+    cliente: Cliente!
+    items: [PedidoItem!]!
+    createdAt: String!
+    updatedAt: String!
+}
+
+type PedidoItem {
+    id: ID!
+    cantidad: Int!
+    precioUnitario: Float!
+    descuentoItem: Float!
+    producto: Producto!
+    subtotal: Float!
+}
+
+type Ruta {
+    id: ID!
+    codigoRuta: String!
+    fechaRuta: String!
+    horaInicio: String
+    horaFin: String
+    estado: EstadoRuta!
+    distanciaTotalKm: Float
+    tiempoEstimadoMinutos: Int
+    observaciones: String
+    repartidor: Repartidor!
+    createdAt: String!
+    updatedAt: String!
+}
+
+type Repartidor {
+    id: ID!
+    nombre: String!
+    apellido: String!
+    telefono: String
+    documento: String
+    licenciaConducir: String
+    tipoVehiculo: TipoVehiculo
+    placaVehiculo: String
+    capacidadCargaKg: Float
+    estado: EstadoRepartidor!
+    latitudActual: Float
+    longitudActual: Float
+    empresa: Empresa!
+    createdAt: String!
+    updatedAt: String!
+}
+
+type Direccion {
+    id: ID!
+    direccion: String!
+    ciudad: String
+    departamento: String
+    pais: String
+    codigoPostal: String
+    latitud: Float
+    longitud: Float
+    esPrincipal: Boolean!
+    referencias: String
+}
+
+# Enums
+enum PlanSuscripcion {
+    BASICO
+    PROFESIONAL
+    EMPRESARIAL
+}
+
+enum TipoDocumento {
+    CI
+    PASAPORTE
+    RUC
+    NIT
+}
+
+enum SegmentoCliente {
+    NUEVO
+    FRECUENTE
+    VIP
+    INACTIVO
+}
+
+enum EstadoPedido {
+    PENDIENTE
+    CONFIRMADO
+    PREPARANDO
+    EN_RUTA
+    ENTREGADO
+    CANCELADO
+    DEVUELTO
+}
+
+enum MetodoPago {
+    EFECTIVO
+    TARJETA_CREDITO
+    TARJETA_DEBITO
+    TRANSFERENCIA
+    QR_PAGO
+}
+
+enum PrioridadPedido {
+    BAJA
+    NORMAL
+    ALTA
+    URGENTE
+}
+
+enum EstadoRuta {
+    PLANIFICADA
+    EN_PROGRESO
+    COMPLETADA
+    CANCELADA
+    PAUSADA
+}
+
+enum TipoVehiculo {
+    BICICLETA
+    MOTOCICLETA
+    AUTO
+    CAMIONETA
+    CAMION
+}
+
+enum EstadoRepartidor {
+    DISPONIBLE
+    EN_RUTA
+    OCUPADO
+    DESCANSO
+    INACTIVO
+}
+
+# Input Types para mutations
+input CrearEmpresaInput {
+    nombre: String!
+    rucNit: String!
+    email: String
+    telefono: String
+    direccion: String
+    ciudad: String
+    pais: String
+    planSuscripcion: PlanSuscripcion!
+}
+
+input CrearProductoInput {
+    nombre: String!
+    descripcion: String
+    sku: String
+    precio: Float!
+    costo: Float
+    stockActual: Int!
+    stockMinimo: Int!
+    unidadMedida: String
+    categoria: String
+    pesoKg: Float
+    imagenUrl: String
+    requiereRefrigeracion: Boolean = false
+    esFragil: Boolean = false
+    empresaId: ID!
+}
+
+input CrearClienteInput {
+    nombre: String!
+    apellido: String!
+    email: String
+    telefono: String
+    documento: String
+    tipoDocumento: TipoDocumento
+    fechaNacimiento: String
+    preferenciasEntrega: String
+    empresaId: ID!
+}
+
+input CrearPedidoInput {
+    clienteId: ID!
+    observaciones: String
+    metodoPago: MetodoPago
+    prioridad: PrioridadPedido = NORMAL
+    items: [CrearPedidoItemInput!]!
+}
+
+input CrearPedidoItemInput {
+    productoId: ID!
+    cantidad: Int!
+    precioUnitario: Float!
+    descuentoItem: Float = 0
+}
+
+# Queries
+type Query {
+    # Empresas
+    empresa(id: ID!): Empresa
+    empresas: [Empresa!]!
+    
+    # Productos
+    producto(id: ID!): Producto
+    productos(empresaId: ID!): [Producto!]!
+    productosConStockBajo(empresaId: ID!): [Producto!]!
+    buscarProductos(empresaId: ID!, nombre: String!): [Producto!]!
+    
+    # Clientes
+    cliente(id: ID!): Cliente
+    clientes(empresaId: ID!): [Cliente!]!
+    clientesVIP(empresaId: ID!): [Cliente!]!
+    
+    # Pedidos
+    pedido(id: ID!): Pedido
+    pedidos(empresaId: ID!): [Pedido!]!
+    pedidosPendientes(empresaId: ID!): [Pedido!]!
+    pedidosDeHoy(empresaId: ID!): [Pedido!]!
+    
+    # Rutas
+    ruta(id: ID!): Ruta
+    rutas(empresaId: ID!): [Ruta!]!
+    rutasDeHoy(empresaId: ID!): [Ruta!]!
+    
+    # Repartidores
+    repartidor(id: ID!): Repartidor
+    repartidores(empresaId: ID!): [Repartidor!]!
+    repartidoresDisponibles(empresaId: ID!): [Repartidor!]!
+}
+
+# Mutations
+type Mutation {
+    # Empresas
+    crearEmpresa(input: CrearEmpresaInput!): Empresa!
+    
+    # Productos
+    crearProducto(input: CrearProductoInput!): Producto!
+    actualizarStock(productoId: ID!, nuevoStock: Int!): Producto!
+    
+    # Clientes
+    crearCliente(input: CrearClienteInput!): Cliente!
+    
+    # Pedidos
+    crearPedido(input: CrearPedidoInput!): Pedido!
+    confirmarPedido(pedidoId: ID!): Pedido!
+    marcarPedidoEnRuta(pedidoId: ID!): Pedido!
+    marcarPedidoEntregado(pedidoId: ID!): Pedido!
+    cancelarPedido(pedidoId: ID!): Pedido!
+}

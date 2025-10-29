@@ -1,0 +1,46 @@
+# Archivos y directorios a ignorar durante el build de Docker
+
+# Directorios de build
+target/
+!target/*.jar
+
+# Archivos de IDE
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Archivos temporales
+*.tmp
+*.temp
+
+# Archivos de configuración local
+application-local.properties
+application-dev.properties
+
+# Docker files (no necesarios dentro del contenedor)
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Git
+.git/
+.gitignore
+
+# Maven wrapper (ya se copia específicamente)
+# .mvn/
+# mvnw
+# mvnw.cmd
+
+# Documentación
+README.md
+docs/
