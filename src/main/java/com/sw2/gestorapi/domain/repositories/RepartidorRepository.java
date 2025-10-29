@@ -50,4 +50,23 @@ public interface RepartidorRepository extends JpaRepository<Repartidor, UUID> {
      * Verifica si existe un repartidor con el documento dado
      */
     boolean existsByDocumentoAndEmpresaId(String documento, UUID empresaId);
+
+    /**
+     * Verifica si existe un repartidor con el teléfono dado
+     */
+    boolean existsByTelefonoAndEmpresaId(String telefono, UUID empresaId);
+
+    /**
+     * Busca repartidores cerca de una ubicación
+     */
+    @Query("SELECT r FROM Repartidor r WHERE r.empresa.id = :empresaId AND " +
+           "r.latitudActual IS NOT NULL AND r.longitudActual IS NOT NULL AND " +
+           "r.active = true AND " +
+           "(6371 * acos(cos(radians(:latitud)) * cos(radians(r.latitudActual)) * " +
+           "cos(radians(r.longitudActual) - radians(:longitud)) + " +
+           "sin(radians(:latitud)) * sin(radians(r.latitudActual)))) <= :radioKm")
+    List<Repartidor> findRepartidoresCercanos(@Param("empresaId") UUID empresaId,
+                                              @Param("latitud") Double latitud,
+                                              @Param("longitud") Double longitud,
+                                              @Param("radioKm") Double radioKm);
 }
