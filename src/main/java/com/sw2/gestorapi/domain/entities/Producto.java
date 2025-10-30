@@ -34,11 +34,11 @@ public class Producto extends BaseEntity {
     private String sku;
 
     @DecimalMin(value = "0.0", inclusive = false, message = "El precio debe ser mayor a 0")
-    @Column(name = "precio", nullable = false, precision = 10, scale = 2)
+    @Column(name = "precio", nullable = false)
     private BigDecimal precio;
 
     @DecimalMin(value = "0.0", message = "El costo no puede ser negativo")
-    @Column(name = "costo", precision = 10, scale = 2)
+    @Column(name = "costo")
     private BigDecimal costo;
 
     @Min(value = 0, message = "El stock no puede ser negativo")
@@ -59,7 +59,7 @@ public class Producto extends BaseEntity {
     @Column(name = "categoria", length = 100)
     private String categoria;
 
-    @Column(name = "peso_kg", precision = 8, scale = 3)
+    @Column(name = "peso_kg")
     private BigDecimal pesoKg;
 
     @Size(max = 200, message = "La URL de imagen no puede exceder 200 caracteres")

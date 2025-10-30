@@ -53,10 +53,6 @@ public class Direccion extends BaseEntity {
     @JoinColumn(name = "cliente_id")
     private Cliente cliente;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "repartidor_id")
-    private Repartidor repartidor;
-
     public String getDireccionCompleta() {
         StringBuilder sb = new StringBuilder();
         sb.append(direccion);

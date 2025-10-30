@@ -1,32 +1,13 @@
 -- ===================================================================
--- SCRIPT DE INICIALIZACIÓN - DistrIA Database
+-- SCRIPT DE INICIALIZACIÓN SIMPLIFICADO - DistrIA Database
 -- ===================================================================
--- Este script se ejecuta automáticamente cuando se crea el contenedor de PostgreSQL
 
--- Crear extensiones necesarias
+-- Crear extensiones básicas necesarias
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE EXTENSION IF NOT EXISTS "pgcrypto";
-CREATE EXTENSION IF NOT EXISTS "pg_stat_statements";
-CREATE EXTENSION IF NOT EXISTS "pg_trgm";
-
--- Crear esquemas adicionales
-CREATE SCHEMA IF NOT EXISTS analytics;
-CREATE SCHEMA IF NOT EXISTS reporting;
-CREATE SCHEMA IF NOT EXISTS audit;
 
 -- Configurar timezone para Bolivia
 SET timezone = 'America/La_Paz';
-
--- ===================================================================
--- CONFIGURACIONES DE PERFORMANCE
--- ===================================================================
-
--- Configurar parámetros de performance
-ALTER SYSTEM SET shared_preload_libraries = 'pg_stat_statements';
-ALTER SYSTEM SET track_activity_query_size = 2048;
-ALTER SYSTEM SET pg_stat_statements.track = 'all';
-ALTER SYSTEM SET log_statement = 'mod';
-ALTER SYSTEM SET log_min_duration_statement = 1000;
 
 -- ===================================================================
 -- FUNCIONES AUXILIARES

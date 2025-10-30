@@ -106,7 +106,7 @@ public interface PedidoRepository extends JpaRepository<Pedido, UUID> {
      * Busca pedidos de hoy
      */
     @Query("SELECT p FROM Pedido p WHERE p.cliente.empresa.id = :empresaId AND " +
-           "DATE(p.fechaPedido) = CURRENT_DATE AND p.active = true")
+           "CAST(p.fechaPedido as date) = CAST(CURRENT_TIMESTAMP as date) AND p.active = true")
     List<Pedido> findPedidosDeHoy(@Param("empresaId") UUID empresaId);
 
     /**

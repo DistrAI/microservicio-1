@@ -79,6 +79,10 @@ public class Empresa extends BaseEntity {
     @Builder.Default
     private Set<Repartidor> repartidores = new HashSet<>();
 
+    @OneToMany(mappedBy = "empresa", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @Builder.Default
+    private Set<Ruta> rutas = new HashSet<>();
+
     public enum PlanSuscripcion {
         BASICO,
         PROFESIONAL,

@@ -107,12 +107,13 @@ public class ClienteResolver {
         return true;
     }
 
-    @QueryMapping
-    public ClienteEstadisticas estadisticasClientes(@Argument String empresaId) {
-        log.info("Consultando estadísticas de clientes para empresa: {}", empresaId);
-        ClienteService.ClienteEstadisticas stats = clienteService.obtenerEstadisticas(UUID.fromString(empresaId));
-        return new ClienteEstadisticas(stats);
-    }
+    // Temporalmente comentado para evitar problemas de inicialización
+    // @QueryMapping
+    // public ClienteEstadisticas estadisticasClientes(@Argument String empresaId) {
+    //     log.info("Consultando estadísticas de clientes para empresa: {}", empresaId);
+    //     ClienteService.ClienteEstadisticas stats = clienteService.obtenerEstadisticas(UUID.fromString(empresaId));
+    //     return new ClienteEstadisticas(stats);
+    // }
 
     // DTOs internos
     public static class CrearClienteInput {
@@ -162,7 +163,11 @@ public class ClienteResolver {
         private Integer clientesNuevos;
 
         public ClienteEstadisticas(ClienteService.ClienteEstadisticas stats) {
-            // Constructor que convierte desde el DTO del servicio
+            // Por ahora retornamos valores por defecto hasta implementar los getters en el servicio
+            this.totalClientes = 0;
+            this.clientesVIP = 0;
+            this.clientesFrecuentes = 0;
+            this.clientesNuevos = 0;
         }
 
         // Getters

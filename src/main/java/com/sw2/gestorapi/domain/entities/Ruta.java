@@ -38,7 +38,7 @@ public class Ruta extends BaseEntity {
     @Builder.Default
     private EstadoRuta estado = EstadoRuta.PLANIFICADA;
 
-    @Column(name = "distancia_total_km", precision = 8, scale = 2)
+    @Column(name = "distancia_total_km")
     private Double distanciaTotalKm;
 
     @Column(name = "tiempo_estimado_minutos")
@@ -47,6 +47,10 @@ public class Ruta extends BaseEntity {
     @Size(max = 500, message = "Las observaciones no pueden exceder 500 caracteres")
     @Column(name = "observaciones", length = 500)
     private String observaciones;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "empresa_id", nullable = false)
+    private Empresa empresa;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "repartidor_id", nullable = false)

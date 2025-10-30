@@ -40,22 +40,22 @@ public class Pedido extends BaseEntity {
     private EstadoPedido estado = EstadoPedido.PENDIENTE;
 
     @DecimalMin(value = "0.0", message = "El subtotal no puede ser negativo")
-    @Column(name = "subtotal", nullable = false, precision = 10, scale = 2)
+    @Column(name = "subtotal", nullable = false)
     @Builder.Default
     private BigDecimal subtotal = BigDecimal.ZERO;
 
     @DecimalMin(value = "0.0", message = "El descuento no puede ser negativo")
-    @Column(name = "descuento", precision = 10, scale = 2)
+    @Column(name = "descuento")
     @Builder.Default
     private BigDecimal descuento = BigDecimal.ZERO;
 
     @DecimalMin(value = "0.0", message = "El costo de envío no puede ser negativo")
-    @Column(name = "costo_envio", precision = 10, scale = 2)
+    @Column(name = "costo_envio")
     @Builder.Default
     private BigDecimal costoEnvio = BigDecimal.ZERO;
 
     @DecimalMin(value = "0.0", message = "El total no puede ser negativo")
-    @Column(name = "total", nullable = false, precision = 10, scale = 2)
+    @Column(name = "total", nullable = false)
     @Builder.Default
     private BigDecimal total = BigDecimal.ZERO;
 

@@ -47,7 +47,7 @@ public class Repartidor extends BaseEntity {
     @Column(name = "placa_vehiculo", length = 20)
     private String placaVehiculo;
 
-    @Column(name = "capacidad_carga_kg", precision = 8, scale = 2)
+    @Column(name = "capacidad_carga_kg")
     private Double capacidadCargaKg;
 
     @Enumerated(EnumType.STRING)
@@ -65,7 +65,8 @@ public class Repartidor extends BaseEntity {
     @JoinColumn(name = "empresa_id", nullable = false)
     private Empresa empresa;
 
-    @OneToOne(mappedBy = "repartidor", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "direccion_id")
     private Direccion direccion;
 
     @OneToMany(mappedBy = "repartidor", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

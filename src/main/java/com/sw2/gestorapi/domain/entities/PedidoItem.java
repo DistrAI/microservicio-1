@@ -24,11 +24,11 @@ public class PedidoItem extends BaseEntity {
 
     @NotNull(message = "El precio unitario es obligatorio")
     @DecimalMin(value = "0.0", inclusive = false, message = "El precio unitario debe ser mayor a 0")
-    @Column(name = "precio_unitario", nullable = false, precision = 10, scale = 2)
+    @Column(name = "precio_unitario", nullable = false)
     private BigDecimal precioUnitario;
 
     @DecimalMin(value = "0.0", message = "El descuento no puede ser negativo")
-    @Column(name = "descuento_item", precision = 10, scale = 2)
+    @Column(name = "descuento_item")
     @Builder.Default
     private BigDecimal descuentoItem = BigDecimal.ZERO;
 
