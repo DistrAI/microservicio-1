@@ -18,6 +18,8 @@ public class GraphqlExceptionHandler extends DataFetcherExceptionResolverAdapter
             String message = dive.getMostSpecificCause() != null ? dive.getMostSpecificCause().getMessage() : dive.getMessage();
             if (message != null && message.toLowerCase().contains("sku")) {
                 message = "El SKU ya existe. Debe ser único.";
+            } else if (message != null && message.toLowerCase().contains("email")) {
+                message = "El email ya existe. Debe ser único.";
             }
             return GraphqlErrorBuilder.newError(env)
                     .errorType(ErrorType.BAD_REQUEST)

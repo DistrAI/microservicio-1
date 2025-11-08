@@ -1,10 +1,10 @@
 package com.sw.GestorAPI.resolver;
 
-import com.sw.GestorAPI.dto.ActualizarProductoInput;
-import com.sw.GestorAPI.dto.CrearProductoInput;
-import com.sw.GestorAPI.dto.ProductoPageResponse;
-import com.sw.GestorAPI.entity.Producto;
-import com.sw.GestorAPI.service.ProductoService;
+import com.sw.GestorAPI.dto.ActualizarClienteInput;
+import com.sw.GestorAPI.dto.ClientePageResponse;
+import com.sw.GestorAPI.dto.CrearClienteInput;
+import com.sw.GestorAPI.entity.Cliente;
+import com.sw.GestorAPI.service.ClienteService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -13,25 +13,25 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
-import org.springframework.stereotype.Controller;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.stereotype.Controller;
 
 @Controller
 @RequiredArgsConstructor
 @Slf4j
-public class ProductoResolver {
+public class ClienteResolver {
 
-    private final ProductoService productoService;
+    private final ClienteService clienteService;
 
     // =====================
     // QUERIES
     // =====================
     @QueryMapping
     @PreAuthorize("hasAnyRole('ADMIN','REPARTIDOR')")
-    public ProductoPageResponse productos(@Argument Integer page, @Argument Integer size) {
+    public ClientePageResponse clientes(@Argument Integer page, @Argument Integer size) {
         Pageable pageable = PageRequest.of(page == null ? 0 : page, size == null ? 10 : size);
-        Page<Producto> result = productoService.listar(pageable);
-        return new ProductoPageResponse(
+        Page<Cliente> result = clienteService.listar(pageable);
+        return new ClientePageResponse(
                 result.getContent(),
                 (int) result.getTotalElements(),
                 result.getTotalPages(),
@@ -42,10 +42,10 @@ public class ProductoResolver {
 
     @QueryMapping
     @PreAuthorize("hasAnyRole('ADMIN','REPARTIDOR')")
-    public ProductoPageResponse productosActivos(@Argument Integer page, @Argument Integer size) {
+    public ClientePageResponse clientesActivos(@Argument Integer page, @Argument Integer size) {
         Pageable pageable = PageRequest.of(page == null ? 0 : page, size == null ? 10 : size);
-        Page<Producto> result = productoService.listarActivos(pageable);
-        return new ProductoPageResponse(
+        Page<Cliente> result = clienteService.listarActivos(pageable);
+        return new ClientePageResponse(
                 result.getContent(),
                 (int) result.getTotalElements(),
                 result.getTotalPages(),
@@ -56,26 +56,26 @@ public class ProductoResolver {
 
     @QueryMapping
     @PreAuthorize("hasAnyRole('ADMIN','REPARTIDOR')")
-    public Producto producto(@Argument Long id) {
-        return productoService.obtenerPorId(id)
-                .orElseThrow(() -> new IllegalArgumentException("Producto no encontrado con ID: " + id));
+    public Cliente cliente(@Argument Long id) {
+        return clienteService.obtenerPorId(id)
+                .orElseThrow(() -> new IllegalArgumentException("Cliente no encontrado con ID: " + id));
     }
 
     @QueryMapping
     @PreAuthorize("hasAnyRole('ADMIN','REPARTIDOR')")
-    public Producto productoPorSku(@Argument String sku) {
-        return productoService.obtenerPorSku(sku)
+    public Cliente clientePorEmail(@Argument String email) {
+        return clienteService.obtenerPorEmail(email)
                 .orElse(null);
     }
 
     @QueryMapping
     @PreAuthorize("hasAnyRole('ADMIN','REPARTIDOR')")
-    public ProductoPageResponse buscarProductosPorNombre(@Argument String nombre,
-                                                         @Argument Integer page,
-                                                         @Argument Integer size) {
+    public ClientePageResponse buscarClientesPorNombre(@Argument String nombre,
+                                                       @Argument Integer page,
+                                                       @Argument Integer size) {
         Pageable pageable = PageRequest.of(page == null ? 0 : page, size == null ? 10 : size);
-        Page<Producto> result = productoService.buscarPorNombre(nombre, pageable);
-        return new ProductoPageResponse(
+        Page<Cliente> result = clienteService.buscarPorNombre(nombre, pageable);
+        return new ClientePageResponse(
                 result.getContent(),
                 (int) result.getTotalElements(),
                 result.getTotalPages(),
@@ -89,46 +89,46 @@ public class ProductoResolver {
     // =====================
     @MutationMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public Producto crearProducto(@Argument CrearProductoInput input) {
-        Producto p = Producto.builder()
+    public Cliente crearCliente(@Argument CrearClienteInput input) {
+        Cliente c = Cliente.builder()
                 .nombre(input.getNombre())
-                .sku(input.getSku())
-                .descripcion(input.getDescripcion())
-                .precio(input.getPrecio())
+                .email(input.getEmail())
+                .telefono(input.getTelefono())
+                .direccion(input.getDireccion())
                 .activo(true)
                 .build();
-        return productoService.crearProducto(p);
+        return clienteService.crearCliente(c);
     }
 
     @MutationMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public Producto actualizarProducto(@Argument Long id, @Argument ActualizarProductoInput input) {
-        Producto datos = Producto.builder()
+    public Cliente actualizarCliente(@Argument Long id, @Argument ActualizarClienteInput input) {
+        Cliente datos = Cliente.builder()
                 .nombre(input.getNombre())
-                .sku(input.getSku())
-                .descripcion(input.getDescripcion())
-                .precio(input.getPrecio())
+                .email(input.getEmail())
+                .telefono(input.getTelefono())
+                .direccion(input.getDireccion())
                 .activo(input.getActivo())
                 .build();
-        return productoService.actualizarProducto(id, datos);
+        return clienteService.actualizarCliente(id, datos);
     }
 
     @MutationMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public Producto desactivarProducto(@Argument Long id) {
-        return productoService.desactivarProducto(id);
+    public Cliente desactivarCliente(@Argument Long id) {
+        return clienteService.desactivarCliente(id);
     }
 
     @MutationMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public Producto activarProducto(@Argument Long id) {
-        return productoService.activarProducto(id);
+    public Cliente activarCliente(@Argument Long id) {
+        return clienteService.activarCliente(id);
     }
 
     @MutationMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public Boolean eliminarProducto(@Argument Long id) {
-        productoService.eliminarProducto(id);
+    public Boolean eliminarCliente(@Argument Long id) {
+        clienteService.eliminarCliente(id);
         return true;
     }
 }

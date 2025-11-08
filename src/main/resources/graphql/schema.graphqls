@@ -137,6 +137,43 @@ type Query {
     producto(id: ID!): Producto
     productoPorSku(sku: String!): Producto
     buscarProductosPorNombre(nombre: String!, page: Int = 0, size: Int = 10): ProductoPage!
+
+    # =========================
+    # CLIENTES (PAGINADO)
+    # =========================
+    clientes(page: Int = 0, size: Int = 10): ClientePage!
+    clientesActivos(page: Int = 0, size: Int = 10): ClientePage!
+    cliente(id: ID!): Cliente
+    clientePorEmail(email: String!): Cliente
+    buscarClientesPorNombre(nombre: String!, page: Int = 0, size: Int = 10): ClientePage!
+
+    # =========================
+    # PEDIDOS (PAGINADO)
+    # =========================
+    pedidos(page: Int = 0, size: Int = 10): PedidoPage!
+    pedidosActivos(page: Int = 0, size: Int = 10): PedidoPage!
+    pedidosPorEstado(estado: EstadoPedido!, page: Int = 0, size: Int = 10): PedidoPage!
+    pedidosPorCliente(clienteId: ID!, page: Int = 0, size: Int = 10): PedidoPage!
+    pedido(id: ID!): Pedido
+
+    # =========================
+    # INVENTARIOS (PAGINADO)
+    # =========================
+    inventarios(page: Int = 0, size: Int = 10): InventarioPage!
+    inventariosActivos(page: Int = 0, size: Int = 10): InventarioPage!
+    inventarioPorProducto(productoId: ID!): Inventario
+    inventariosStockBajo(page: Int = 0, size: Int = 10): InventarioPage!
+    buscarInventariosPorNombre(nombre: String!, page: Int = 0, size: Int = 10): InventarioPage!
+    movimientosPorProducto(productoId: ID!, page: Int = 0, size: Int = 10): MovimientoPage!
+
+    # =========================
+    # RUTAS DE ENTREGA (PAGINADO)
+    # =========================
+    rutas(page: Int = 0, size: Int = 10): RutaEntregaPage!
+    rutasActivas(page: Int = 0, size: Int = 10): RutaEntregaPage!
+    rutasPorRepartidor(repartidorId: ID!, page: Int = 0, size: Int = 10): RutaEntregaPage!
+    rutasPorEstado(estado: EstadoRuta!, page: Int = 0, size: Int = 10): RutaEntregaPage!
+    ruta(id: ID!): RutaEntrega
 }
 
 # ===================================
@@ -170,6 +207,40 @@ type Mutation {
     desactivarProducto(id: ID!): Producto!
     activarProducto(id: ID!): Producto!
     eliminarProducto(id: ID!): Boolean!
+
+    # =========================
+    # CLIENTES
+    # =========================
+    crearCliente(input: CrearClienteInput!): Cliente!
+    actualizarCliente(id: ID!, input: ActualizarClienteInput!): Cliente!
+    desactivarCliente(id: ID!): Cliente!
+    activarCliente(id: ID!): Cliente!
+    eliminarCliente(id: ID!): Boolean!
+
+    # =========================
+    # PEDIDOS
+    # =========================
+    crearPedido(input: CrearPedidoInput!): Pedido!
+    actualizarEstadoPedido(id: ID!, estado: EstadoPedido!): Pedido!
+    cancelarPedido(id: ID!, motivo: String): Pedido!
+    desactivarPedido(id: ID!): Pedido!
+    eliminarPedido(id: ID!): Boolean!
+
+    # =========================
+    # INVENTARIOS
+    # =========================
+    ajustarInventario(input: AjustarInventarioInput!): Inventario!
+    desactivarInventario(productoId: ID!): Inventario!
+
+    # =========================
+    # RUTAS DE ENTREGA
+    # =========================
+    crearRuta(input: CrearRutaInput!): RutaEntrega!
+    asignarPedidosARuta(input: AsignarPedidosRutaInput!): RutaEntrega!
+    removerPedidoDeRuta(rutaId: ID!, pedidoId: ID!): RutaEntrega!
+    actualizarEstadoRuta(rutaId: ID!, estado: EstadoRuta!): RutaEntrega!
+    desactivarRuta(rutaId: ID!): RutaEntrega!
+    eliminarRuta(rutaId: ID!): Boolean!
 }
 
 # ===================================
@@ -202,6 +273,195 @@ input ActualizarProductoInput {
     activo: Boolean
 }
 
+# ===================================
+# CLIENTE
+# ===================================
+
+type Cliente {
+    id: ID!
+    nombre: String!
+    email: String!
+    telefono: String
+    direccion: String
+    activo: Boolean!
+    fechaCreacion: String!
+    fechaActualizacion: String
+}
+
+input CrearClienteInput {
+    nombre: String!
+    email: String!
+    telefono: String
+    direccion: String
+}
+
+input ActualizarClienteInput {
+    nombre: String
+    email: String
+    telefono: String
+    direccion: String
+    activo: Boolean
+}
+
+type ClientePage {
+    content: [Cliente!]!
+    totalElements: Int!
+    totalPages: Int!
+    page: Int!
+    size: Int!
+}
+
+# ===================================
+# PEDIDO
+# ===================================
+
+enum EstadoPedido {
+    PENDIENTE
+    EN_PROCESO
+    EN_CAMINO
+    ENTREGADO
+    CANCELADO
+}
+
+type ItemPedido {
+    id: ID!
+    producto: Producto!
+    cantidad: Int!
+    precioUnitario: Float!
+    subtotal: Float!
+}
+
+type Pedido {
+    id: ID!
+    cliente: Cliente!
+    estado: EstadoPedido!
+    total: Float!
+    direccionEntrega: String!
+    observaciones: String
+    fechaEntrega: String
+    activo: Boolean!
+    fechaPedido: String!
+    fechaActualizacion: String
+    items: [ItemPedido!]!
+}
+
+input ItemPedidoInput {
+    productoId: ID!
+    cantidad: Int!
+    precioUnitario: Float
+}
+
+input CrearPedidoInput {
+    clienteId: ID!
+    direccionEntrega: String!
+    observaciones: String
+    items: [ItemPedidoInput!]!
+}
+
+type PedidoPage {
+    content: [Pedido!]!
+    totalElements: Int!
+    totalPages: Int!
+    page: Int!
+    size: Int!
+}
+
+# ===================================
+# INVENTARIO
+# ===================================
+
+enum TipoMovimiento {
+    ENTRADA
+    SALIDA
+    AJUSTE
+}
+
+type Inventario {
+    id: ID!
+    producto: Producto!
+    cantidad: Int!
+    ubicacion: String!
+    stockMinimo: Int!
+    activo: Boolean!
+    fechaCreacion: String!
+    fechaUltimaActualizacion: String
+}
+
+type MovimientoInventario {
+    id: ID!
+    producto: Producto!
+    tipo: TipoMovimiento!
+    cantidad: Int!
+    motivo: String!
+    fechaMovimiento: String!
+}
+
+input AjustarInventarioInput {
+    productoId: ID!
+    cantidad: Int!
+    motivo: String!
+}
+
+type InventarioPage {
+    content: [Inventario!]!
+    totalElements: Int!
+    totalPages: Int!
+    page: Int!
+    size: Int!
+}
+
+type MovimientoPage {
+    content: [MovimientoInventario!]!
+    totalElements: Int!
+    totalPages: Int!
+    page: Int!
+    size: Int!
+}
+
+# ===================================
+# RUTA DE ENTREGA
+# ===================================
+
+enum EstadoRuta {
+    PLANIFICADA
+    EN_CURSO
+    COMPLETADA
+    CANCELADA
+}
+
+type RutaEntrega {
+    id: ID!
+    repartidor: Usuario!
+    estado: EstadoRuta!
+    fechaRuta: String!
+    distanciaTotalKm: Float
+    tiempoEstimadoMin: Int
+    activo: Boolean!
+    fechaCreacion: String!
+    fechaActualizacion: String
+    pedidos: [Pedido!]!
+}
+
+type RutaEntregaPage {
+    content: [RutaEntrega!]!
+    totalElements: Int!
+    totalPages: Int!
+    page: Int!
+    size: Int!
+}
+
+input CrearRutaInput {
+    repartidorId: ID!
+    fechaRuta: String!
+    distanciaTotalKm: Float
+    tiempoEstimadoMin: Int
+    pedidosIds: [ID!]
+}
+
+input AsignarPedidosRutaInput {
+    rutaId: ID!
+    pedidosIds: [ID!]!
+}
 type ProductoPage {
     content: [Producto!]!
     totalElements: Int!
