@@ -1,0 +1,152 @@
+# ===================================
+# SCHEMA GRAPHQL - DistrIA GestorAPI
+# ===================================
+
+# ===================================
+# ENUMS
+# ===================================
+
+"""
+Roles disponibles en el sistema
+"""
+enum Rol {
+    """Acceso total al sistema: gestión completa de productos, clientes, pedidos, rutas"""
+    ADMIN
+    """Acceso limitado: solo puede ver sus rutas y actualizar entregas"""
+    REPARTIDOR
+}
+
+# ===================================
+# TYPES
+# ===================================
+
+"""
+Respuesta de autenticación con token JWT
+"""
+type AuthResponse {
+    """Token JWT para autenticación"""
+    token: String!
+    """Tipo de token (Bearer)"""
+    tipo: String!
+    """ID del usuario autenticado"""
+    userId: ID!
+    """Email del usuario"""
+    email: String!
+    """Nombre completo del usuario"""
+    nombreCompleto: String!
+    """Rol del usuario"""
+    rol: Rol!
+}
+
+"""
+Representa un usuario del sistema DistrIA
+"""
+type Usuario {
+    """ID único del usuario"""
+    id: ID!
+    """Nombre completo del usuario"""
+    nombreCompleto: String!
+    """Email único del usuario (usado para login)"""
+    email: String!
+    """Rol del usuario en el sistema"""
+    rol: Rol!
+    """Número de teléfono del usuario"""
+    telefono: String
+    """Indica si el usuario está activo en el sistema"""
+    activo: Boolean!
+    """Fecha de creación del usuario"""
+    fechaCreacion: String!
+    """Fecha del último acceso del usuario"""
+    ultimoAcceso: String
+    """Fecha de última actualización"""
+    fechaActualizacion: String
+}
+
+# ===================================
+# INPUTS
+# ===================================
+
+"""
+Input para crear un nuevo usuario
+"""
+input CrearUsuarioInput {
+    """Nombre completo del usuario"""
+    nombreCompleto: String!
+    """Email único del usuario"""
+    email: String!
+    """Contraseña del usuario"""
+    password: String!
+    """Rol del usuario (ADMIN o REPARTIDOR)"""
+    rol: Rol!
+    """Teléfono del usuario (opcional)"""
+    telefono: String
+}
+
+"""
+Input para actualizar un usuario existente
+"""
+input ActualizarUsuarioInput {
+    """Nombre completo del usuario"""
+    nombreCompleto: String
+    """Email del usuario"""
+    email: String
+    """Nueva contraseña (opcional, solo si se quiere cambiar)"""
+    password: String
+    """Rol del usuario"""
+    rol: Rol
+    """Teléfono del usuario"""
+    telefono: String
+    """Estado activo del usuario"""
+    activo: Boolean
+}
+
+# ===================================
+# QUERIES
+# ===================================
+
+type Query {
+    """Obtiene todos los usuarios del sistema"""
+    usuarios: [Usuario!]!
+    
+    """Obtiene un usuario por su ID"""
+    usuario(id: ID!): Usuario
+    
+    """Obtiene un usuario por su email"""
+    usuarioPorEmail(email: String!): Usuario
+    
+    """Obtiene todos los usuarios activos"""
+    usuariosActivos: [Usuario!]!
+    
+    """Obtiene usuarios filtrados por rol"""
+    usuariosPorRol(rol: Rol!): [Usuario!]!
+    
+    """Obtiene usuarios activos filtrados por rol"""
+    usuariosActivosPorRol(rol: Rol!): [Usuario!]!
+    
+    """Busca usuarios por nombre (búsqueda parcial)"""
+    buscarUsuariosPorNombre(nombre: String!): [Usuario!]!
+}
+
+# ===================================
+# MUTATIONS
+# ===================================
+
+type Mutation {
+    """Realiza el login de un usuario y retorna un token JWT"""
+    login(email: String!, password: String!): AuthResponse!
+    
+    """Crea un nuevo usuario en el sistema"""
+    crearUsuario(input: CrearUsuarioInput!): Usuario!
+    
+    """Actualiza un usuario existente"""
+    actualizarUsuario(id: ID!, input: ActualizarUsuarioInput!): Usuario!
+    
+    """Desactiva un usuario (soft delete)"""
+    desactivarUsuario(id: ID!): Usuario!
+    
+    """Activa un usuario previamente desactivado"""
+    activarUsuario(id: ID!): Usuario!
+    
+    """Elimina permanentemente un usuario (operación irreversible)"""
+    eliminarUsuario(id: ID!): Boolean!
+}

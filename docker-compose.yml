@@ -1,0 +1,36 @@
+services:
+  gestor-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: gestor-api
+    network_mode: host
+    environment:
+      # Configuración de la base de datos Render
+      SPRING_DATASOURCE_URL: jdbc:postgresql://dpg-d47jqnshg0os73fo6460-a.oregon-postgres.render.com:5432/gestorapi_ge18
+      SPRING_DATASOURCE_USERNAME: admin
+      SPRING_DATASOURCE_PASSWORD: NDFvY7PuVaE0KzlwUZbSD4W87afRKM62
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
+      
+      # Configuración JPA/Hibernate
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_SHOW_SQL: "true"
+      SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.PostgreSQLDialect
+      SPRING_JPA_PROPERTIES_HIBERNATE_FORMAT_SQL: "true"
+      
+      # Configuración de GraphQL
+      SPRING_GRAPHQL_GRAPHIQL_ENABLED: "true"
+      SPRING_GRAPHQL_PATH: /graphql
+      SPRING_GRAPHQL_GRAPHIQL_PATH: /graphiql
+      
+      # Configuración de la aplicación
+      SERVER_PORT: 8081
+      JAVA_OPTS: "-Xms256m -Xmx512m"
+      
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8081/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
