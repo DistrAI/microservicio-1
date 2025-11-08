@@ -1,6 +1,7 @@
 package com.sw.GestorAPI.resolver;
 
 import com.sw.GestorAPI.dto.AjustarInventarioInput;
+import com.sw.GestorAPI.dto.CrearInventarioInput;
 import com.sw.GestorAPI.dto.InventarioPageResponse;
 import com.sw.GestorAPI.dto.MovimientoPageResponse;
 import com.sw.GestorAPI.entity.Inventario;
@@ -108,6 +109,17 @@ public class InventarioResolver {
     // =====================
     // MUTATIONS (SOLO ADMIN)
     // =====================
+    @MutationMapping
+    @PreAuthorize("hasRole('ADMIN')")
+    public Inventario crearInventario(@Argument @Valid CrearInventarioInput input) {
+        return inventarioService.crearInventario(
+            input.getProductoId(), 
+            input.getCantidadInicial(), 
+            input.getUbicacion(), 
+            input.getStockMinimo()
+        );
+    }
+
     @MutationMapping
     @PreAuthorize("hasRole('ADMIN')")
     public Inventario ajustarInventario(@Argument @Valid AjustarInventarioInput input) {

@@ -17,5 +17,5 @@ public class ItemPedidoInput {
     private Integer cantidad;
     
     @DecimalMin(value = "0.0", inclusive = false, message = "El precio unitario debe ser mayor a 0")
-    private BigDecimal precioUnitario; // Opcional, si no se proporciona usa el precio del producto
+    private BigDecimal precioUnitario; // OPCIONAL: Si no se proporciona, usa automáticamente el precio actual del producto
 }

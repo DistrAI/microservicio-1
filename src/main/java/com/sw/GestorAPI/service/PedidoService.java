@@ -83,7 +83,7 @@ public class PedidoService {
             ItemPedido item = ItemPedido.builder()
                     .producto(producto)
                     .cantidad(itemData.getCantidad())
-                    .precioUnitario(itemData.getPrecioUnitario() != null ? itemData.getPrecioUnitario() : producto.getPrecio())
+                    .precioUnitario(producto.getPrecio()) // Siempre usar el precio actual del producto
                     .build();
 
             item.calcularSubtotal();
@@ -209,7 +209,7 @@ public class PedidoService {
     public static class ItemPedidoData {
         private Long productoId;
         private Integer cantidad;
-        private BigDecimal precioUnitario; // Opcional, si no se proporciona usa el precio del producto
+        private BigDecimal precioUnitario; // OPCIONAL: Si es null, usa automáticamente el precio actual del producto
 
         public ItemPedidoData() {}
 

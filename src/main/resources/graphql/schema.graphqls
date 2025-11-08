@@ -229,6 +229,7 @@ type Mutation {
     # =========================
     # INVENTARIOS
     # =========================
+    crearInventario(input: CrearInventarioInput!): Inventario!
     ajustarInventario(input: AjustarInventarioInput!): Inventario!
     desactivarInventario(productoId: ID!): Inventario!
 
@@ -394,6 +395,13 @@ type MovimientoInventario {
     cantidad: Int!
     motivo: String!
     fechaMovimiento: String!
+}
+
+input CrearInventarioInput {
+    productoId: ID!
+    cantidadInicial: Int!
+    ubicacion: String!
+    stockMinimo: Int!
 }
 
 input AjustarInventarioInput {
