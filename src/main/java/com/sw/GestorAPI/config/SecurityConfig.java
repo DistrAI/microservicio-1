@@ -1,5 +1,6 @@
 package com.sw.GestorAPI.config;
 
+import com.sw.GestorAPI.security.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,6 +12,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -26,6 +28,8 @@ import java.util.List;
 @EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
+
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     /**
      * Configura la cadena de filtros de seguridad
@@ -47,7 +51,10 @@ public class SecurityConfig {
                         ).permitAll()
                         // Cualquier otra petición requiere autenticación
                         .anyRequest().permitAll() // Por ahora todo público para desarrollo
-                );
+                )
+                // Registrar filtro JWT para poblar SecurityContext en /graphql
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+        ;
 
         return http.build();
     }

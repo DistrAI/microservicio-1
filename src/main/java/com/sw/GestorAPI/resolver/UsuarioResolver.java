@@ -10,6 +10,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 
 import java.util.List;
@@ -94,6 +96,20 @@ public class UsuarioResolver {
         return usuarioService.buscarUsuariosPorNombre(nombre);
     }
 
+    /**
+     * Devuelve el usuario autenticado según el token (SecurityContext)
+     */
+    @QueryMapping
+    public Usuario me() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null || auth.getName() == null) {
+            return null;
+        }
+        String email = auth.getName();
+        log.info("GraphQL Query: me -> {}", email);
+        return usuarioService.obtenerUsuarioPorEmail(email).orElse(null);
+    }
+
     // ===================================
     // MUTATIONS
     // ===================================
@@ -104,7 +120,7 @@ public class UsuarioResolver {
     @MutationMapping
     public Usuario crearUsuario(@Argument CrearUsuarioInput input) {
         log.info("GraphQL Mutation: crearUsuario con email: {}", input.getEmail());
-        
+
         Usuario nuevoUsuario = Usuario.builder()
                 .nombreCompleto(input.getNombreCompleto())
                 .email(input.getEmail())
@@ -123,7 +139,7 @@ public class UsuarioResolver {
     @MutationMapping
     public Usuario actualizarUsuario(@Argument Long id, @Argument ActualizarUsuarioInput input) {
         log.info("GraphQL Mutation: actualizarUsuario ID: {}", id);
-        
+
         Usuario usuarioActualizado = Usuario.builder()
                 .nombreCompleto(input.getNombreCompleto())
                 .email(input.getEmail())

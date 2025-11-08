@@ -125,6 +125,18 @@ type Query {
     
     """Busca usuarios por nombre (búsqueda parcial)"""
     buscarUsuariosPorNombre(nombre: String!): [Usuario!]!
+
+    """Devuelve el usuario autenticado segun el token"""
+    me: Usuario
+
+    # =========================
+    # PRODUCTOS (PAGINADO)
+    # =========================
+    productos(page: Int = 0, size: Int = 10): ProductoPage!
+    productosActivos(page: Int = 0, size: Int = 10): ProductoPage!
+    producto(id: ID!): Producto
+    productoPorSku(sku: String!): Producto
+    buscarProductosPorNombre(nombre: String!, page: Int = 0, size: Int = 10): ProductoPage!
 }
 
 # ===================================
@@ -149,4 +161,53 @@ type Mutation {
     
     """Elimina permanentemente un usuario (operación irreversible)"""
     eliminarUsuario(id: ID!): Boolean!
+
+    # =========================
+    # PRODUCTOS
+    # =========================
+    crearProducto(input: CrearProductoInput!): Producto!
+    actualizarProducto(id: ID!, input: ActualizarProductoInput!): Producto!
+    desactivarProducto(id: ID!): Producto!
+    activarProducto(id: ID!): Producto!
+    eliminarProducto(id: ID!): Boolean!
 }
+
+# ===================================
+# PRODUCTO
+# ===================================
+
+type Producto {
+    id: ID!
+    nombre: String!
+    sku: String!
+    descripcion: String
+    precio: Float!
+    activo: Boolean!
+    fechaCreacion: String!
+    fechaActualizacion: String
+}
+
+input CrearProductoInput {
+    nombre: String!
+    sku: String!
+    descripcion: String
+    precio: Float!
+}
+
+input ActualizarProductoInput {
+    nombre: String
+    sku: String
+    descripcion: String
+    precio: Float
+    activo: Boolean
+}
+
+type ProductoPage {
+    content: [Producto!]!
+    totalElements: Int!
+    totalPages: Int!
+    page: Int!
+    size: Int!
+}
+
+
