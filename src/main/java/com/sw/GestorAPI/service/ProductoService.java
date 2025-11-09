@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,33 +18,33 @@ public class ProductoService {
 
     private final ProductoRepository productoRepository;
 
-    public Page<Producto> listar(Pageable pageable) {
+    public Page<Producto> listar(@NonNull Pageable pageable) {
         return productoRepository.findAll(pageable);
     }
 
-    public Page<Producto> listarActivos(Pageable pageable) {
+    public Page<Producto> listarActivos(@NonNull Pageable pageable) {
         return productoRepository.findByActivoTrue(pageable);
     }
 
-    public Page<Producto> buscarPorNombre(String nombre, Pageable pageable) {
+    public Page<Producto> buscarPorNombre(@NonNull String nombre, @NonNull Pageable pageable) {
         return productoRepository.findByNombreContainingIgnoreCase(nombre, pageable);
     }
 
-    public Optional<Producto> obtenerPorId(Long id) {
+    public Optional<Producto> obtenerPorId(@NonNull Long id) {
         return productoRepository.findById(id);
     }
 
-    public Optional<Producto> obtenerPorSku(String sku) {
+    public Optional<Producto> obtenerPorSku(@NonNull String sku) {
         return productoRepository.findBySku(sku);
     }
 
     @Transactional
-    public Producto crearProducto(Producto producto) {
+    public Producto crearProducto(@NonNull Producto producto) {
         return productoRepository.save(producto);
     }
 
     @Transactional
-    public Producto actualizarProducto(Long id, Producto datos) {
+    public Producto actualizarProducto(@NonNull Long id, @NonNull Producto datos) {
         Producto existente = productoRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Producto no encontrado con ID: " + id));
 
@@ -57,7 +58,7 @@ public class ProductoService {
     }
 
     @Transactional
-    public Producto desactivarProducto(Long id) {
+    public Producto desactivarProducto(@NonNull Long id) {
         Producto existente = productoRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Producto no encontrado con ID: " + id));
         existente.setActivo(false);
@@ -65,7 +66,7 @@ public class ProductoService {
     }
 
     @Transactional
-    public Producto activarProducto(Long id) {
+    public Producto activarProducto(@NonNull Long id) {
         Producto existente = productoRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Producto no encontrado con ID: " + id));
         existente.setActivo(true);
@@ -73,7 +74,7 @@ public class ProductoService {
     }
 
     @Transactional
-    public void eliminarProducto(Long id) {
+    public void eliminarProducto(@NonNull Long id) {
         if (!productoRepository.existsById(id)) {
             throw new IllegalArgumentException("Producto no encontrado con ID: " + id);
         }

@@ -15,6 +15,7 @@ import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.stereotype.Controller;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.lang.NonNull;
 
 @Controller
 @RequiredArgsConstructor
@@ -56,21 +57,21 @@ public class ProductoResolver {
 
     @QueryMapping
     @PreAuthorize("hasAnyRole('ADMIN','REPARTIDOR')")
-    public Producto producto(@Argument Long id) {
+    public Producto producto(@Argument @NonNull Long id) {
         return productoService.obtenerPorId(id)
                 .orElseThrow(() -> new IllegalArgumentException("Producto no encontrado con ID: " + id));
     }
 
     @QueryMapping
     @PreAuthorize("hasAnyRole('ADMIN','REPARTIDOR')")
-    public Producto productoPorSku(@Argument String sku) {
+    public Producto productoPorSku(@Argument @NonNull String sku) {
         return productoService.obtenerPorSku(sku)
                 .orElse(null);
     }
 
     @QueryMapping
     @PreAuthorize("hasAnyRole('ADMIN','REPARTIDOR')")
-    public ProductoPageResponse buscarProductosPorNombre(@Argument String nombre,
+    public ProductoPageResponse buscarProductosPorNombre(@Argument @NonNull String nombre,
                                                          @Argument Integer page,
                                                          @Argument Integer size) {
         Pageable pageable = PageRequest.of(page == null ? 0 : page, size == null ? 10 : size);
@@ -102,7 +103,7 @@ public class ProductoResolver {
 
     @MutationMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public Producto actualizarProducto(@Argument Long id, @Argument ActualizarProductoInput input) {
+    public Producto actualizarProducto(@Argument @NonNull Long id, @Argument ActualizarProductoInput input) {
         Producto datos = Producto.builder()
                 .nombre(input.getNombre())
                 .sku(input.getSku())
@@ -115,19 +116,19 @@ public class ProductoResolver {
 
     @MutationMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public Producto desactivarProducto(@Argument Long id) {
+    public Producto desactivarProducto(@Argument @NonNull Long id) {
         return productoService.desactivarProducto(id);
     }
 
     @MutationMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public Producto activarProducto(@Argument Long id) {
+    public Producto activarProducto(@Argument @NonNull Long id) {
         return productoService.activarProducto(id);
     }
 
     @MutationMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public Boolean eliminarProducto(@Argument Long id) {
+    public Boolean eliminarProducto(@Argument @NonNull Long id) {
         productoService.eliminarProducto(id);
         return true;
     }

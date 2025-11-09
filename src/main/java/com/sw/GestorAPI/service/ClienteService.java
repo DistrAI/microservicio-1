@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,28 +18,28 @@ public class ClienteService {
 
     private final ClienteRepository clienteRepository;
 
-    public Page<Cliente> listar(Pageable pageable) {
+    public Page<Cliente> listar(@NonNull Pageable pageable) {
         return clienteRepository.findAll(pageable);
     }
 
-    public Page<Cliente> listarActivos(Pageable pageable) {
+    public Page<Cliente> listarActivos(@NonNull Pageable pageable) {
         return clienteRepository.findByActivoTrue(pageable);
     }
 
-    public Page<Cliente> buscarPorNombre(String nombre, Pageable pageable) {
+    public Page<Cliente> buscarPorNombre(@NonNull String nombre, @NonNull Pageable pageable) {
         return clienteRepository.findByNombreContainingIgnoreCase(nombre, pageable);
     }
 
-    public Optional<Cliente> obtenerPorId(Long id) {
+    public Optional<Cliente> obtenerPorId(@NonNull Long id) {
         return clienteRepository.findById(id);
     }
 
-    public Optional<Cliente> obtenerPorEmail(String email) {
+    public Optional<Cliente> obtenerPorEmail(@NonNull String email) {
         return clienteRepository.findByEmail(email);
     }
 
     @Transactional
-    public Cliente crearCliente(Cliente cliente) {
+    public Cliente crearCliente(@NonNull Cliente cliente) {
         // Verificar que el email no exista
         if (clienteRepository.existsByEmail(cliente.getEmail())) {
             throw new IllegalArgumentException("Ya existe un cliente con el email: " + cliente.getEmail());
@@ -47,7 +48,7 @@ public class ClienteService {
     }
 
     @Transactional
-    public Cliente actualizarCliente(Long id, Cliente datos) {
+    public Cliente actualizarCliente(@NonNull Long id, @NonNull Cliente datos) {
         Cliente existente = clienteRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Cliente no encontrado con ID: " + id));
 
@@ -68,7 +69,7 @@ public class ClienteService {
     }
 
     @Transactional
-    public Cliente desactivarCliente(Long id) {
+    public Cliente desactivarCliente(@NonNull Long id) {
         Cliente existente = clienteRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Cliente no encontrado con ID: " + id));
         existente.setActivo(false);
@@ -76,7 +77,7 @@ public class ClienteService {
     }
 
     @Transactional
-    public Cliente activarCliente(Long id) {
+    public Cliente activarCliente(@NonNull Long id) {
         Cliente existente = clienteRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Cliente no encontrado con ID: " + id));
         existente.setActivo(true);
@@ -84,7 +85,7 @@ public class ClienteService {
     }
 
     @Transactional
-    public void eliminarCliente(Long id) {
+    public void eliminarCliente(@NonNull Long id) {
         if (!clienteRepository.existsById(id)) {
             throw new IllegalArgumentException("Cliente no encontrado con ID: " + id);
         }

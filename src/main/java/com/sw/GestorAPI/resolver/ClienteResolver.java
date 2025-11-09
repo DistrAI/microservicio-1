@@ -15,6 +15,7 @@ import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
+import org.springframework.lang.NonNull;
 
 @Controller
 @RequiredArgsConstructor
@@ -56,21 +57,21 @@ public class ClienteResolver {
 
     @QueryMapping
     @PreAuthorize("hasAnyRole('ADMIN','REPARTIDOR')")
-    public Cliente cliente(@Argument Long id) {
+    public Cliente cliente(@Argument @NonNull Long id) {
         return clienteService.obtenerPorId(id)
                 .orElseThrow(() -> new IllegalArgumentException("Cliente no encontrado con ID: " + id));
     }
 
     @QueryMapping
     @PreAuthorize("hasAnyRole('ADMIN','REPARTIDOR')")
-    public Cliente clientePorEmail(@Argument String email) {
+    public Cliente clientePorEmail(@Argument @NonNull String email) {
         return clienteService.obtenerPorEmail(email)
                 .orElse(null);
     }
 
     @QueryMapping
     @PreAuthorize("hasAnyRole('ADMIN','REPARTIDOR')")
-    public ClientePageResponse buscarClientesPorNombre(@Argument String nombre,
+    public ClientePageResponse buscarClientesPorNombre(@Argument @NonNull String nombre,
                                                        @Argument Integer page,
                                                        @Argument Integer size) {
         Pageable pageable = PageRequest.of(page == null ? 0 : page, size == null ? 10 : size);
@@ -102,7 +103,7 @@ public class ClienteResolver {
 
     @MutationMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public Cliente actualizarCliente(@Argument Long id, @Argument ActualizarClienteInput input) {
+    public Cliente actualizarCliente(@Argument @NonNull Long id, @Argument ActualizarClienteInput input) {
         Cliente datos = Cliente.builder()
                 .nombre(input.getNombre())
                 .email(input.getEmail())
@@ -115,19 +116,19 @@ public class ClienteResolver {
 
     @MutationMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public Cliente desactivarCliente(@Argument Long id) {
+    public Cliente desactivarCliente(@Argument @NonNull Long id) {
         return clienteService.desactivarCliente(id);
     }
 
     @MutationMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public Cliente activarCliente(@Argument Long id) {
+    public Cliente activarCliente(@Argument @NonNull Long id) {
         return clienteService.activarCliente(id);
     }
 
     @MutationMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public Boolean eliminarCliente(@Argument Long id) {
+    public Boolean eliminarCliente(@Argument @NonNull Long id) {
         clienteService.eliminarCliente(id);
         return true;
     }

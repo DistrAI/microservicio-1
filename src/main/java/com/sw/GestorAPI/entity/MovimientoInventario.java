@@ -51,6 +51,14 @@ public class MovimientoInventario {
     @Column(name = "fecha_movimiento", nullable = false, updatable = false)
     private LocalDateTime fechaMovimiento;
 
+    @NotNull(message = "La cantidad anterior es obligatoria")
+    @Column(name = "cantidad_anterior", nullable = false)
+    private Integer cantidadAnterior;
+
+    @NotNull(message = "La cantidad nueva es obligatoria")
+    @Column(name = "cantidad_nueva", nullable = false)
+    private Integer cantidadNueva;
+
     // Método de conveniencia para obtener el delta según el tipo
     public Integer getDelta() {
         return switch (tipo) {

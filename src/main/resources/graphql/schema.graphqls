@@ -395,6 +395,8 @@ type MovimientoInventario {
     cantidad: Int!
     motivo: String!
     fechaMovimiento: String!
+    cantidadAnterior: Int!
+    cantidadNueva: Int!
 }
 
 input CrearInventarioInput {
