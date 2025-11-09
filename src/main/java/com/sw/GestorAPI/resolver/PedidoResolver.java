@@ -17,6 +17,7 @@ import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
+import org.springframework.lang.NonNull;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -61,7 +62,7 @@ public class PedidoResolver {
 
     @QueryMapping
     @PreAuthorize("hasAnyRole('ADMIN','REPARTIDOR')")
-    public PedidoPageResponse pedidosPorEstado(@Argument EstadoPedido estado, @Argument Integer page, @Argument Integer size) {
+    public PedidoPageResponse pedidosPorEstado(@Argument @NonNull EstadoPedido estado, @Argument Integer page, @Argument Integer size) {
         Pageable pageable = PageRequest.of(page == null ? 0 : page, size == null ? 10 : size);
         Page<Pedido> result = pedidoService.listarPorEstado(estado, pageable);
         return new PedidoPageResponse(
@@ -75,7 +76,7 @@ public class PedidoResolver {
 
     @QueryMapping
     @PreAuthorize("hasAnyRole('ADMIN','REPARTIDOR')")
-    public PedidoPageResponse pedidosPorCliente(@Argument Long clienteId, @Argument Integer page, @Argument Integer size) {
+    public PedidoPageResponse pedidosPorCliente(@Argument @NonNull Long clienteId, @Argument Integer page, @Argument Integer size) {
         Pageable pageable = PageRequest.of(page == null ? 0 : page, size == null ? 10 : size);
         Page<Pedido> result = pedidoService.listarPorCliente(clienteId, pageable);
         return new PedidoPageResponse(
@@ -89,7 +90,7 @@ public class PedidoResolver {
 
     @QueryMapping
     @PreAuthorize("hasAnyRole('ADMIN','REPARTIDOR')")
-    public Pedido pedido(@Argument Long id) {
+    public Pedido pedido(@Argument @NonNull Long id) {
         return pedidoService.obtenerPorId(id)
                 .orElseThrow(() -> new IllegalArgumentException("Pedido no encontrado con ID: " + id));
     }
@@ -108,25 +109,25 @@ public class PedidoResolver {
 
     @MutationMapping
     @PreAuthorize("hasAnyRole('ADMIN','REPARTIDOR')")
-    public Pedido actualizarEstadoPedido(@Argument Long id, @Argument EstadoPedido estado) {
+    public Pedido actualizarEstadoPedido(@Argument @NonNull Long id, @Argument @NonNull EstadoPedido estado) {
         return pedidoService.actualizarEstado(id, estado);
     }
 
     @MutationMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public Pedido cancelarPedido(@Argument Long id, @Argument String motivo) {
+    public Pedido cancelarPedido(@Argument @NonNull Long id, @Argument String motivo) {
         return pedidoService.cancelarPedido(id, motivo);
     }
 
     @MutationMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public Pedido desactivarPedido(@Argument Long id) {
+    public Pedido desactivarPedido(@Argument @NonNull Long id) {
         return pedidoService.desactivarPedido(id);
     }
 
     @MutationMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public Boolean eliminarPedido(@Argument Long id) {
+    public Boolean eliminarPedido(@Argument @NonNull Long id) {
         pedidoService.eliminarPedido(id);
         return true;
     }

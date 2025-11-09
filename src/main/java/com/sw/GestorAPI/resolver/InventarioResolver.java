@@ -18,6 +18,7 @@ import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
+import org.springframework.lang.NonNull;
 
 @Controller
 @RequiredArgsConstructor
@@ -59,7 +60,7 @@ public class InventarioResolver {
 
     @QueryMapping
     @PreAuthorize("hasAnyRole('ADMIN','REPARTIDOR')")
-    public Inventario inventarioPorProducto(@Argument Long productoId) {
+    public Inventario inventarioPorProducto(@Argument @NonNull Long productoId) {
         return inventarioService.obtenerPorProductoId(productoId)
                 .orElse(null);
     }
@@ -80,7 +81,7 @@ public class InventarioResolver {
 
     @QueryMapping
     @PreAuthorize("hasAnyRole('ADMIN','REPARTIDOR')")
-    public InventarioPageResponse buscarInventariosPorNombre(@Argument String nombre, @Argument Integer page, @Argument Integer size) {
+    public InventarioPageResponse buscarInventariosPorNombre(@Argument @NonNull String nombre, @Argument Integer page, @Argument Integer size) {
         Pageable pageable = PageRequest.of(page == null ? 0 : page, size == null ? 10 : size);
         Page<Inventario> result = inventarioService.buscarPorNombreProducto(nombre, pageable);
         return new InventarioPageResponse(
@@ -94,7 +95,7 @@ public class InventarioResolver {
 
     @QueryMapping
     @PreAuthorize("hasAnyRole('ADMIN','REPARTIDOR')")
-    public MovimientoPageResponse movimientosPorProducto(@Argument Long productoId, @Argument Integer page, @Argument Integer size) {
+    public MovimientoPageResponse movimientosPorProducto(@Argument @NonNull Long productoId, @Argument Integer page, @Argument Integer size) {
         Pageable pageable = PageRequest.of(page == null ? 0 : page, size == null ? 10 : size);
         Page<MovimientoInventario> result = inventarioService.listarMovimientosPorProducto(productoId, pageable);
         return new MovimientoPageResponse(
@@ -128,7 +129,7 @@ public class InventarioResolver {
 
     @MutationMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public Inventario desactivarInventario(@Argument Long productoId) {
+    public Inventario desactivarInventario(@Argument @NonNull Long productoId) {
         return inventarioService.desactivarInventario(productoId);
     }
 }

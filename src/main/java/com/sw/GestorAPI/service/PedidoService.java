@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,32 +28,32 @@ public class PedidoService {
     private final ProductoService productoService;
     private final InventarioService inventarioService;
 
-    public Page<Pedido> listar(Pageable pageable) {
+    public Page<Pedido> listar(@NonNull Pageable pageable) {
         return pedidoRepository.findAll(pageable);
     }
 
-    public Page<Pedido> listarActivos(Pageable pageable) {
+    public Page<Pedido> listarActivos(@NonNull Pageable pageable) {
         return pedidoRepository.findByActivoTrue(pageable);
     }
 
-    public Page<Pedido> listarPorEstado(EstadoPedido estado, Pageable pageable) {
+    public Page<Pedido> listarPorEstado(@NonNull EstadoPedido estado, @NonNull Pageable pageable) {
         return pedidoRepository.findByEstado(estado, pageable);
     }
 
-    public Page<Pedido> listarPorCliente(Long clienteId, Pageable pageable) {
+    public Page<Pedido> listarPorCliente(@NonNull Long clienteId, @NonNull Pageable pageable) {
         return pedidoRepository.findByClienteId(clienteId, pageable);
     }
 
-    public Page<Pedido> listarEnProceso(Pageable pageable) {
+    public Page<Pedido> listarEnProceso(@NonNull Pageable pageable) {
         return pedidoRepository.findPedidosEnProceso(pageable);
     }
 
-    public Optional<Pedido> obtenerPorId(Long id) {
+    public Optional<Pedido> obtenerPorId(@NonNull Long id) {
         return pedidoRepository.findById(id);
     }
 
     @Transactional
-    public Pedido crearPedido(Long clienteId, String direccionEntrega, String observaciones, List<ItemPedidoData> items) {
+    public Pedido crearPedido(@NonNull Long clienteId, @NonNull String direccionEntrega, String observaciones, @NonNull List<ItemPedidoData> items) {
         // Validar cliente
         Cliente cliente = clienteService.obtenerPorId(clienteId)
                 .orElseThrow(() -> new IllegalArgumentException("Cliente no encontrado con ID: " + clienteId));
@@ -106,7 +107,7 @@ public class PedidoService {
     }
 
     @Transactional
-    public Pedido actualizarEstado(Long id, EstadoPedido nuevoEstado) {
+    public Pedido actualizarEstado(@NonNull Long id, @NonNull EstadoPedido nuevoEstado) {
         Pedido pedido = pedidoRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Pedido no encontrado con ID: " + id));
 
@@ -124,7 +125,7 @@ public class PedidoService {
     }
 
     @Transactional
-    public Pedido cancelarPedido(Long id, String motivo) {
+    public Pedido cancelarPedido(@NonNull Long id, String motivo) {
         Pedido pedido = pedidoRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Pedido no encontrado con ID: " + id));
 
@@ -157,7 +158,7 @@ public class PedidoService {
     }
 
     @Transactional
-    public Pedido desactivarPedido(Long id) {
+    public Pedido desactivarPedido(@NonNull Long id) {
         Pedido pedido = pedidoRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Pedido no encontrado con ID: " + id));
         pedido.setActivo(false);
@@ -165,14 +166,14 @@ public class PedidoService {
     }
 
     @Transactional
-    public void eliminarPedido(Long id) {
+    public void eliminarPedido(@NonNull Long id) {
         if (!pedidoRepository.existsById(id)) {
             throw new IllegalArgumentException("Pedido no encontrado con ID: " + id);
         }
         pedidoRepository.deleteById(id);
     }
 
-    public long contarPorEstado(EstadoPedido estado) {
+    public long contarPorEstado(@NonNull EstadoPedido estado) {
         return pedidoRepository.countByEstado(estado);
     }
 
