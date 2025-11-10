@@ -1,5 +1,6 @@
 package com.sw.GestorAPI.service;
 
+import com.sw.GestorAPI.dto.ActualizarUbicacionClienteInput;
 import com.sw.GestorAPI.entity.Cliente;
 import com.sw.GestorAPI.repository.ClienteRepository;
 import lombok.RequiredArgsConstructor;
@@ -94,5 +95,19 @@ public class ClienteService {
 
     public Page<Cliente> pagina(int page, int size) {
         return listar(PageRequest.of(page, size));
+    }
+
+    @Transactional
+    public Cliente actualizarUbicacionCliente(@NonNull Long id, @NonNull ActualizarUbicacionClienteInput input) {
+        Cliente existente = clienteRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Cliente no encontrado con ID: " + id));
+
+        // Actualizar campos de ubicación
+        existente.setDireccion(input.getDireccion());
+        existente.setLatitudCliente(input.getLatitudCliente());
+        existente.setLongitudCliente(input.getLongitudCliente());
+        existente.setReferenciaDireccion(input.getReferenciaDireccion());
+
+        return clienteRepository.save(existente);
     }
 }

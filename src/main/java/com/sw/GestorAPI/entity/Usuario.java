@@ -51,6 +51,19 @@ public class Usuario {
     @Column(length = 20)
     private String telefono;
 
+    // Campos de ubicación de la empresa/PYME
+    @Column(name = "direccion_empresa", length = 500)
+    private String direccionEmpresa;
+
+    @Column(name = "latitud_empresa")
+    private Double latitudEmpresa;
+
+    @Column(name = "longitud_empresa")
+    private Double longitudEmpresa;
+
+    @Column(name = "nombre_empresa", length = 200)
+    private String nombreEmpresa;
+
     @Column(nullable = false)
     @Builder.Default
     private Boolean activo = true;

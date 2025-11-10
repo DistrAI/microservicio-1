@@ -36,8 +36,18 @@ public class Cliente {
     @Column(length = 20)
     private String telefono;
 
-    @Column(length = 255)
+    // Campos de ubicación del cliente
+    @Column(length = 500)
     private String direccion;
+
+    @Column(name = "latitud_cliente")
+    private Double latitudCliente;
+
+    @Column(name = "longitud_cliente")
+    private Double longitudCliente;
+
+    @Column(name = "referencia_direccion", length = 300)
+    private String referenciaDireccion;
 
     @Builder.Default
     @Column(nullable = false)

@@ -52,6 +52,14 @@ type Usuario {
     rol: Rol!
     """Número de teléfono del usuario"""
     telefono: String
+    """Dirección completa de la empresa (solo para ADMIN)"""
+    direccionEmpresa: String
+    """Latitud GPS de la empresa (solo para ADMIN)"""
+    latitudEmpresa: Float
+    """Longitud GPS de la empresa (solo para ADMIN)"""
+    longitudEmpresa: Float
+    """Nombre comercial de la empresa (solo para ADMIN)"""
+    nombreEmpresa: String
     """Indica si el usuario está activo en el sistema"""
     activo: Boolean!
     """Fecha de creación del usuario"""
@@ -80,6 +88,14 @@ input CrearUsuarioInput {
     rol: Rol!
     """Teléfono del usuario (opcional)"""
     telefono: String
+    """Dirección completa de la empresa (solo para ADMIN)"""
+    direccionEmpresa: String
+    """Latitud GPS de la empresa (solo para ADMIN)"""
+    latitudEmpresa: Float
+    """Longitud GPS de la empresa (solo para ADMIN)"""
+    longitudEmpresa: Float
+    """Nombre comercial de la empresa (solo para ADMIN)"""
+    nombreEmpresa: String
 }
 
 """
@@ -98,6 +114,20 @@ input ActualizarUsuarioInput {
     telefono: String
     """Estado activo del usuario"""
     activo: Boolean
+}
+
+"""
+Input para actualizar la ubicación de la empresa de un usuario
+"""
+input ActualizarUbicacionEmpresaInput {
+    """Dirección completa de la empresa"""
+    direccionEmpresa: String!
+    """Latitud GPS de la empresa"""
+    latitudEmpresa: Float!
+    """Longitud GPS de la empresa"""
+    longitudEmpresa: Float!
+    """Nombre comercial de la empresa"""
+    nombreEmpresa: String!
 }
 
 # ===================================
@@ -198,6 +228,9 @@ type Mutation {
     
     """Elimina permanentemente un usuario (operación irreversible)"""
     eliminarUsuario(id: ID!): Boolean!
+    
+    """Actualiza la ubicación de la empresa de un usuario administrador"""
+    actualizarUbicacionEmpresa(id: ID!, input: ActualizarUbicacionEmpresaInput!): Usuario!
 
     # =========================
     # PRODUCTOS
@@ -213,6 +246,8 @@ type Mutation {
     # =========================
     crearCliente(input: CrearClienteInput!): Cliente!
     actualizarCliente(id: ID!, input: ActualizarClienteInput!): Cliente!
+    """Actualiza la ubicación GPS de un cliente"""
+    actualizarUbicacionCliente(id: ID!, input: ActualizarUbicacionClienteInput!): Cliente!
     desactivarCliente(id: ID!): Cliente!
     activarCliente(id: ID!): Cliente!
     eliminarCliente(id: ID!): Boolean!
@@ -284,6 +319,12 @@ type Cliente {
     email: String!
     telefono: String
     direccion: String
+    """Latitud GPS de la dirección del cliente"""
+    latitudCliente: Float
+    """Longitud GPS de la dirección del cliente"""
+    longitudCliente: Float
+    """Referencias adicionales para la entrega"""
+    referenciaDireccion: String
     activo: Boolean!
     fechaCreacion: String!
     fechaActualizacion: String
@@ -294,6 +335,12 @@ input CrearClienteInput {
     email: String!
     telefono: String
     direccion: String
+    """Latitud GPS de la dirección del cliente"""
+    latitudCliente: Float
+    """Longitud GPS de la dirección del cliente"""
+    longitudCliente: Float
+    """Referencias adicionales para la entrega"""
+    referenciaDireccion: String
 }
 
 input ActualizarClienteInput {
@@ -302,6 +349,20 @@ input ActualizarClienteInput {
     telefono: String
     direccion: String
     activo: Boolean
+}
+
+"""
+Input para actualizar la ubicación de un cliente
+"""
+input ActualizarUbicacionClienteInput {
+    """Dirección completa del cliente"""
+    direccion: String!
+    """Latitud GPS de la dirección del cliente"""
+    latitudCliente: Float!
+    """Longitud GPS de la dirección del cliente"""
+    longitudCliente: Float!
+    """Referencias adicionales para la entrega"""
+    referenciaDireccion: String
 }
 
 type ClientePage {

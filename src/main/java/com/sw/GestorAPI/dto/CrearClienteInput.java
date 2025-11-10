@@ -14,5 +14,10 @@ public class CrearClienteInput {
     private String email;
     
     private String telefono;
+    
+    // Campos de ubicación del cliente
     private String direccion;
+    private Double latitudCliente;
+    private Double longitudCliente;
+    private String referenciaDireccion;
 }

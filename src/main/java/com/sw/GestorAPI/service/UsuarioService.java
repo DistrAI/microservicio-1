@@ -1,5 +1,6 @@
 package com.sw.GestorAPI.service;
 
+import com.sw.GestorAPI.dto.ActualizarUbicacionEmpresaInput;
 import com.sw.GestorAPI.entity.Usuario;
 import com.sw.GestorAPI.enums.Rol;
 import com.sw.GestorAPI.repository.UsuarioRepository;
@@ -237,5 +238,36 @@ public class UsuarioService {
         
         usuario.actualizarUltimoAcceso();
         usuarioRepository.save(usuario);
+    }
+
+    /**
+     * Actualiza la ubicación de la empresa de un usuario
+     * 
+     * @param id ID del usuario
+     * @param input Datos de ubicación de la empresa
+     * @return Usuario actualizado
+     */
+    @Transactional
+    public Usuario actualizarUbicacionEmpresa(Long id, ActualizarUbicacionEmpresaInput input) {
+        log.info("Actualizando ubicación de empresa para usuario ID: {}", id);
+        
+        Usuario usuario = usuarioRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado con ID: " + id));
+        
+        // Validar que el usuario sea ADMIN (solo los administradores tienen empresa)
+        if (usuario.getRol() != Rol.ADMIN) {
+            throw new IllegalArgumentException("Solo los usuarios administradores pueden tener ubicación de empresa");
+        }
+        
+        // Actualizar campos de ubicación
+        usuario.setDireccionEmpresa(input.getDireccionEmpresa());
+        usuario.setLatitudEmpresa(input.getLatitudEmpresa());
+        usuario.setLongitudEmpresa(input.getLongitudEmpresa());
+        usuario.setNombreEmpresa(input.getNombreEmpresa());
+        
+        Usuario guardado = usuarioRepository.save(usuario);
+        log.info("Ubicación de empresa actualizada para usuario: {}", guardado.getEmail());
+        
+        return guardado;
     }
 }

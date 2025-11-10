@@ -32,4 +32,10 @@ public class CrearUsuarioInput {
     private Rol rol;
 
     private String telefono;
+
+    // Campos de ubicación de la empresa (solo para ADMIN/GERENTE)
+    private String direccionEmpresa;
+    private Double latitudEmpresa;
+    private Double longitudEmpresa;
+    private String nombreEmpresa;
 }

@@ -1,6 +1,7 @@
 package com.sw.GestorAPI.resolver;
 
 import com.sw.GestorAPI.dto.ActualizarClienteInput;
+import com.sw.GestorAPI.dto.ActualizarUbicacionClienteInput;
 import com.sw.GestorAPI.dto.ClientePageResponse;
 import com.sw.GestorAPI.dto.CrearClienteInput;
 import com.sw.GestorAPI.entity.Cliente;
@@ -96,6 +97,9 @@ public class ClienteResolver {
                 .email(input.getEmail())
                 .telefono(input.getTelefono())
                 .direccion(input.getDireccion())
+                .latitudCliente(input.getLatitudCliente())
+                .longitudCliente(input.getLongitudCliente())
+                .referenciaDireccion(input.getReferenciaDireccion())
                 .activo(true)
                 .build();
         return clienteService.crearCliente(c);
@@ -131,5 +135,11 @@ public class ClienteResolver {
     public Boolean eliminarCliente(@Argument @NonNull Long id) {
         clienteService.eliminarCliente(id);
         return true;
+    }
+
+    @MutationMapping
+    @PreAuthorize("hasRole('ADMIN')")
+    public Cliente actualizarUbicacionCliente(@Argument @NonNull Long id, @Argument ActualizarUbicacionClienteInput input) {
+        return clienteService.actualizarUbicacionCliente(id, input);
     }
 }

@@ -1,6 +1,7 @@
 package com.sw.GestorAPI.resolver;
 
 import com.sw.GestorAPI.dto.ActualizarUsuarioInput;
+import com.sw.GestorAPI.dto.ActualizarUbicacionEmpresaInput;
 import com.sw.GestorAPI.dto.CrearUsuarioInput;
 import com.sw.GestorAPI.entity.Usuario;
 import com.sw.GestorAPI.enums.Rol;
@@ -127,6 +128,10 @@ public class UsuarioResolver {
                 .password(input.getPassword())
                 .rol(input.getRol())
                 .telefono(input.getTelefono())
+                .direccionEmpresa(input.getDireccionEmpresa())
+                .latitudEmpresa(input.getLatitudEmpresa())
+                .longitudEmpresa(input.getLongitudEmpresa())
+                .nombreEmpresa(input.getNombreEmpresa())
                 .activo(true)
                 .build();
 
@@ -178,5 +183,14 @@ public class UsuarioResolver {
         log.info("GraphQL Mutation: eliminarUsuario ID: {}", id);
         usuarioService.eliminarUsuario(id);
         return true;
+    }
+
+    /**
+     * Actualiza la ubicación de la empresa de un usuario
+     */
+    @MutationMapping
+    public Usuario actualizarUbicacionEmpresa(@Argument Long id, @Argument ActualizarUbicacionEmpresaInput input) {
+        log.info("GraphQL Mutation: actualizarUbicacionEmpresa ID: {}", id);
+        return usuarioService.actualizarUbicacionEmpresa(id, input);
     }
 }
