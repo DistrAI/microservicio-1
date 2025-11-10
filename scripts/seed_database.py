@@ -20,11 +20,11 @@ from faker import Faker
 # CONFIGURACIÓN DE BASE DE DATOS
 # ============================================================================
 DB_CONFIG = {
-    'host': 'dpg-d47jqnshg0os73fo6460-a.oregon-postgres.render.com',
+    'host': 'dpg-d48sg3ogjchc73f2ksc0-a.oregon-postgres.render.com',
     'port': 5432,
-    'database': 'gestorapi_ge18',
+    'database': 'gestorapi_ixn4',
     'user': 'admin',
-    'password': 'NDFvY7PuVaE0KzlwUZbSD4W87afRKM62'
+    'password': 'cNi4bxZsyBvD6P2SKnP1A9iJZTWORB5p'
 }
 
 # ============================================================================
@@ -37,15 +37,39 @@ CANTIDAD_PEDIDOS = 1000
 CANTIDAD_RUTAS = 200
 
 # ============================================================================
-# COORDENADAS GPS DE SANTA CRUZ DE LA SIERRA, BOLIVIA
+# COORDENADAS GPS EXACTAS DE SANTA CRUZ DE LA SIERRA, BOLIVIA
 # ============================================================================
+# Centro: Plaza 24 de Septiembre (Corazón de Santa Cruz)
 SANTA_CRUZ_CENTER = {
-    'lat': -17.783327,
-    'lng': -63.182140
+    'lat': -17.783444,  # Latitud exacta del centro de Santa Cruz
+    'lng': -63.182127   # Longitud exacta del centro de Santa Cruz
 }
 
-# Radio aproximado en grados (aprox 10km)
-GPS_RADIUS = 0.09
+# Radio de cobertura urbana (aprox 15km - cubre toda el área metropolitana)
+GPS_RADIUS = 0.135  # Equivale a ~15km de radio
+
+# Zonas específicas de Santa Cruz para distribución más realista
+ZONAS_SANTA_CRUZ = [
+    # Centro y primer anillo
+    {'nombre': 'Centro', 'lat': -17.783444, 'lng': -63.182127, 'radio': 0.015},
+    {'nombre': 'Equipetrol', 'lat': -17.784167, 'lng': -63.180833, 'radio': 0.020},
+    
+    # Segundo anillo
+    {'nombre': 'Plan 3000', 'lat': -17.750000, 'lng': -63.166667, 'radio': 0.025},
+    {'nombre': 'Villa 1ro de Mayo', 'lat': -17.816667, 'lng': -63.150000, 'radio': 0.020},
+    {'nombre': 'Pampa de la Isla', 'lat': -17.750000, 'lng': -63.200000, 'radio': 0.025},
+    
+    # Tercer anillo
+    {'nombre': 'Av. Santos Dumont', 'lat': -17.800000, 'lng': -63.166667, 'radio': 0.030},
+    {'nombre': 'Radial 10', 'lat': -17.766667, 'lng': -63.133333, 'radio': 0.025},
+    {'nombre': 'Radial 13', 'lat': -17.816667, 'lng': -63.200000, 'radio': 0.025},
+    
+    # Cuarto anillo y periferia
+    {'nombre': 'Norte', 'lat': -17.733333, 'lng': -63.166667, 'radio': 0.035},
+    {'nombre': 'Sur', 'lat': -17.833333, 'lng': -63.166667, 'radio': 0.035},
+    {'nombre': 'Este', 'lat': -17.783333, 'lng': -63.116667, 'radio': 0.035},
+    {'nombre': 'Oeste', 'lat': -17.783333, 'lng': -63.216667, 'radio': 0.035},
+]
 
 # ============================================================================
 # INICIALIZAR FAKER
@@ -65,13 +89,30 @@ def hash_password(password: str) -> str:
 
 
 def generar_coordenadas_santa_cruz():
-    """Genera coordenadas GPS aleatorias dentro de Santa Cruz"""
-    # Generar offset aleatorio dentro del radio
-    lat_offset = random.uniform(-GPS_RADIUS, GPS_RADIUS)
-    lng_offset = random.uniform(-GPS_RADIUS, GPS_RADIUS)
+    """Genera coordenadas GPS aleatorias dentro de zonas específicas de Santa Cruz"""
+    # Seleccionar una zona aleatoria de Santa Cruz (80% zonas específicas, 20% general)
+    if random.random() < 0.8:
+        # Usar zona específica
+        zona = random.choice(ZONAS_SANTA_CRUZ)
+        centro_lat = zona['lat']
+        centro_lng = zona['lng']
+        radio = zona['radio']
+    else:
+        # Usar área general
+        centro_lat = SANTA_CRUZ_CENTER['lat']
+        centro_lng = SANTA_CRUZ_CENTER['lng']
+        radio = GPS_RADIUS
     
-    lat = SANTA_CRUZ_CENTER['lat'] + lat_offset
-    lng = SANTA_CRUZ_CENTER['lng'] + lng_offset
+    # Generar offset aleatorio dentro del radio de la zona
+    lat_offset = random.uniform(-radio, radio)
+    lng_offset = random.uniform(-radio, radio)
+    
+    lat = centro_lat + lat_offset
+    lng = centro_lng + lng_offset
+    
+    # Asegurar que las coordenadas estén dentro de Santa Cruz
+    lat = max(-17.900000, min(-17.650000, lat))  # Límites de Santa Cruz
+    lng = max(-63.300000, min(-63.050000, lng))
     
     return round(lat, 8), round(lng, 8)
 

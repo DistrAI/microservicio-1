@@ -32,9 +32,9 @@ docker run -d \
   -p 8081:8081 \
   --name gestor-api \
   --network host \
-  -e SPRING_DATASOURCE_URL=jdbc:postgresql://dpg-d47jqnshg0os73fo6460-a.oregon-postgres.render.com:5432/gestorapi_ge18 \
+  -e SPRING_DATASOURCE_URL=jdbc:postgresql://dpg-d48sg3ogjchc73f2ksc0-a.oregon-postgres.render.com:5432/gestorapi_ixn4 \
   -e SPRING_DATASOURCE_USERNAME=admin \
-  -e SPRING_DATASOURCE_PASSWORD=NDFvY7PuVaE0KzlwUZbSD4W87afRKM62 \
+  -e SPRING_DATASOURCE_PASSWORD=cNi4bxZsyBvD6P2SKnP1A9iJZTWORB5p \
   -e SERVER_PORT=8081 \
   gestor-api:latest
 
@@ -101,9 +101,9 @@ docker-compose down -v
 ## 🌐 Base de Datos
 
 La aplicación está configurada para conectarse automáticamente a Render PostgreSQL:
-- **Host:** dpg-d47jqnshg0os73fo6460-a.oregon-postgres.render.com
+- **Host:** dpg-d48sg3ogjchc73f2ksc0-a.oregon-postgres.render.com
 - **Puerto:** 5432
-- **Database:** gestorapi_ge18
+- **Database:** gestorapi_ixn4
 - **User:** admin
 
 Las credenciales están configuradas en `docker-compose.yml` y `application.properties`.

@@ -89,11 +89,12 @@ Después de ejecutar el script, puedes acceder con:
 
 ## 🌍 Ubicaciones GPS
 
-Todos los clientes y la empresa tienen coordenadas GPS **reales** en:
+Todos los clientes y la empresa tienen coordenadas GPS **exactas** en:
 
 📍 **Santa Cruz de la Sierra, Bolivia**
-- Centro: `-17.783327, -63.182140`
-- Radio: ~10 km
+- **Centro**: `-17.783444, -63.182127` (Plaza 24 de Septiembre)
+- **Cobertura**: ~15 km de radio (área metropolitana completa)
+- **Zonas específicas**: Centro, Equipetrol, Plan 3000, Villa 1ro de Mayo, Pampa de la Isla, Av. Santos Dumont, Radiales 10 y 13, y zonas Norte, Sur, Este, Oeste
 
 ---
 
@@ -169,11 +170,11 @@ Verifica que la URL de la base de datos en `seed_database.py` sea correcta:
 
 ```python
 DB_CONFIG = {
-    'host': 'dpg-d47jqnshg0os73fo6460-a.oregon-postgres.render.com',
+    'host': 'dpg-d48sg3ogjchc73f2ksc0-a.oregon-postgres.render.com',
     'port': 5432,
-    'database': 'gestorapi_ge18',
+    'database': 'gestorapi_ixn4',
     'user': 'admin',
-    'password': 'NDFvY7PuVaE0KzlwUZbSD4W87afRKM62'
+    'password': 'cNi4bxZsyBvD6P2SKnP1A9iJZTWORB5p'
 }
 ```
 
