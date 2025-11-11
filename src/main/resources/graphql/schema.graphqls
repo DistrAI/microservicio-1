@@ -39,6 +39,22 @@ type AuthResponse {
 }
 
 """
+Respuesta de autenticación para clientes desde la aplicación móvil
+"""
+type AuthClienteResponse {
+    """Token JWT para autenticación del cliente"""
+    token: String!
+    """Tipo de token (Bearer)"""
+    tipo: String!
+    """ID del cliente autenticado"""
+    clienteId: ID!
+    """Email del cliente"""
+    email: String!
+    """Nombre del cliente"""
+    nombre: String!
+}
+
+"""
 Representa un usuario del sistema DistrIA
 """
 type Usuario {
@@ -214,6 +230,9 @@ type Mutation {
     """Realiza el login de un usuario y retorna un token JWT"""
     login(email: String!, password: String!): AuthResponse!
     
+    """Login específico para clientes desde la aplicación móvil"""
+    loginCliente(email: String!, password: String!): AuthClienteResponse!
+    
     """Crea un nuevo usuario en el sistema"""
     crearUsuario(input: CrearUsuarioInput!): Usuario!
     
@@ -325,6 +344,8 @@ type Cliente {
     longitudCliente: Float
     """Referencias adicionales para la entrega"""
     referenciaDireccion: String
+    """Fecha del último acceso del cliente"""
+    ultimoAcceso: String
     activo: Boolean!
     fechaCreacion: String!
     fechaActualizacion: String
@@ -333,6 +354,8 @@ type Cliente {
 input CrearClienteInput {
     nombre: String!
     email: String!
+    """Contraseña para acceso desde la aplicación móvil"""
+    password: String!
     telefono: String
     direccion: String
     """Latitud GPS de la dirección del cliente"""

@@ -20,21 +20,21 @@ from faker import Faker
 # CONFIGURACIÓN DE BASE DE DATOS
 # ============================================================================
 DB_CONFIG = {
-    'host': 'dpg-d48sg3ogjchc73f2ksc0-a.oregon-postgres.render.com',
+    'host': 'dpg-d49a9fk9c44c73bilt60-a.oregon-postgres.render.com',
     'port': 5432,
-    'database': 'gestorapi_ixn4',
+    'database': 'gestorapi_ij3r',
     'user': 'admin',
-    'password': 'cNi4bxZsyBvD6P2SKnP1A9iJZTWORB5p'
+    'password': 'GimjVfMKs8ca2LSryY24otdIMJWl38W2'
 }
 
 # ============================================================================
-# CONFIGURACIÓN DE DATOS A GENERAR
+# CONFIGURACIÓN DE DATOS A GENERAR (MÁS REALISTA)
 # ============================================================================
-CANTIDAD_REPARTIDORES = 20
-CANTIDAD_CLIENTES = 1500
-CANTIDAD_PRODUCTOS = 500
-CANTIDAD_PEDIDOS = 1000
-CANTIDAD_RUTAS = 200
+CANTIDAD_REPARTIDORES = 25
+CANTIDAD_CLIENTES = 800
+CANTIDAD_PRODUCTOS = 600
+CANTIDAD_PEDIDOS = 3500  # Más pedidos que clientes (4-5 pedidos por cliente promedio)
+CANTIDAD_RUTAS = 300
 
 # ============================================================================
 # COORDENADAS GPS EXACTAS DE SANTA CRUZ DE LA SIERRA, BOLIVIA
@@ -48,27 +48,41 @@ SANTA_CRUZ_CENTER = {
 # Radio de cobertura urbana (aprox 15km - cubre toda el área metropolitana)
 GPS_RADIUS = 0.135  # Equivale a ~15km de radio
 
-# Zonas específicas de Santa Cruz para distribución más realista
+# Zonas específicas de Santa Cruz de la Sierra - Coordenadas reales y precisas
 ZONAS_SANTA_CRUZ = [
-    # Centro y primer anillo
-    {'nombre': 'Centro', 'lat': -17.783444, 'lng': -63.182127, 'radio': 0.015},
-    {'nombre': 'Equipetrol', 'lat': -17.784167, 'lng': -63.180833, 'radio': 0.020},
+    # Centro histórico y primer anillo
+    {'nombre': 'Centro Histórico', 'lat': -17.783327, 'lng': -63.182140, 'radio': 0.008},
+    {'nombre': 'Equipetrol Norte', 'lat': -17.770000, 'lng': -63.180000, 'radio': 0.012},
+    {'nombre': 'Las Palmas', 'lat': -17.775000, 'lng': -63.195000, 'radio': 0.010},
+    {'nombre': 'Barrio Hamacas', 'lat': -17.790000, 'lng': -63.175000, 'radio': 0.008},
     
-    # Segundo anillo
-    {'nombre': 'Plan 3000', 'lat': -17.750000, 'lng': -63.166667, 'radio': 0.025},
-    {'nombre': 'Villa 1ro de Mayo', 'lat': -17.816667, 'lng': -63.150000, 'radio': 0.020},
-    {'nombre': 'Pampa de la Isla', 'lat': -17.750000, 'lng': -63.200000, 'radio': 0.025},
+    # Segundo anillo - Zonas residenciales
+    {'nombre': 'Plan 3000', 'lat': -17.745000, 'lng': -63.165000, 'radio': 0.020},
+    {'nombre': 'Villa 1ro de Mayo', 'lat': -17.815000, 'lng': -63.148000, 'radio': 0.015},
+    {'nombre': 'Pampa de la Isla', 'lat': -17.748000, 'lng': -63.198000, 'radio': 0.018},
+    {'nombre': 'Barrio Petrolero', 'lat': -17.795000, 'lng': -63.190000, 'radio': 0.012},
+    {'nombre': 'Villa Olímpica', 'lat': -17.760000, 'lng': -63.175000, 'radio': 0.010},
     
-    # Tercer anillo
-    {'nombre': 'Av. Santos Dumont', 'lat': -17.800000, 'lng': -63.166667, 'radio': 0.030},
-    {'nombre': 'Radial 10', 'lat': -17.766667, 'lng': -63.133333, 'radio': 0.025},
-    {'nombre': 'Radial 13', 'lat': -17.816667, 'lng': -63.200000, 'radio': 0.025},
+    # Tercer anillo - Zonas comerciales y residenciales
+    {'nombre': 'Av. Santos Dumont', 'lat': -17.798000, 'lng': -63.165000, 'radio': 0.015},
+    {'nombre': 'Radial 10', 'lat': -17.765000, 'lng': -63.130000, 'radio': 0.020},
+    {'nombre': 'Radial 13', 'lat': -17.815000, 'lng': -63.200000, 'radio': 0.018},
+    {'nombre': 'Radial 17½', 'lat': -17.800000, 'lng': -63.210000, 'radio': 0.015},
+    {'nombre': 'Radial 26', 'lat': -17.740000, 'lng': -63.180000, 'radio': 0.017},
+    {'nombre': 'Av. Alemana', 'lat': -17.785000, 'lng': -63.145000, 'radio': 0.012},
     
-    # Cuarto anillo y periferia
-    {'nombre': 'Norte', 'lat': -17.733333, 'lng': -63.166667, 'radio': 0.035},
-    {'nombre': 'Sur', 'lat': -17.833333, 'lng': -63.166667, 'radio': 0.035},
-    {'nombre': 'Este', 'lat': -17.783333, 'lng': -63.116667, 'radio': 0.035},
-    {'nombre': 'Oeste', 'lat': -17.783333, 'lng': -63.216667, 'radio': 0.035},
+    # Cuarto anillo y zonas periféricas
+    {'nombre': 'Villa Primero de Mayo Norte', 'lat': -17.730000, 'lng': -63.160000, 'radio': 0.025},
+    {'nombre': 'Satélite Norte', 'lat': -17.720000, 'lng': -63.175000, 'radio': 0.020},
+    {'nombre': 'Plan Tres Mil Sur', 'lat': -17.820000, 'lng': -63.155000, 'radio': 0.022},
+    {'nombre': 'Zona Sur (Mutualista)', 'lat': -17.830000, 'lng': -63.170000, 'radio': 0.018},
+    {'nombre': 'Zona Este (Palmasola)', 'lat': -17.780000, 'lng': -63.110000, 'radio': 0.025},
+    {'nombre': 'Zona Oeste (El Bajío)', 'lat': -17.785000, 'lng': -63.220000, 'radio': 0.020},
+    
+    # Zonas comerciales importantes
+    {'nombre': 'Ventura Mall', 'lat': -17.800500, 'lng': -63.156000, 'radio': 0.008},
+    {'nombre': 'Las Brisas', 'lat': -17.770500, 'lng': -63.165000, 'radio': 0.010},
+    {'nombre': 'Barrio Urbari', 'lat': -17.792000, 'lng': -63.200000, 'radio': 0.012},
 ]
 
 # ============================================================================
@@ -131,6 +145,71 @@ def generar_fecha_reciente(dias_atras=90):
     """Genera una fecha aleatoria en los últimos N días"""
     dias_random = random.randint(0, dias_atras)
     return datetime.now() - timedelta(days=dias_random)
+
+
+def generar_direccion_santa_cruz():
+    """Genera una dirección realista de Santa Cruz de la Sierra"""
+    
+    # Calles principales de Santa Cruz
+    calles_principales = [
+        "Av. Monseñor Rivero", "Av. Cristo Redentor", "Av. Santos Dumont", "Av. Alemana",
+        "Av. Banzer", "Av. Roca y Coronado", "Av. Irala", "Av. Cañoto", "Av. Beni",
+        "Av. Paraguá", "Av. Grigotá", "Av. San Martín", "Av. Mutualista", "Av. Piraí"
+    ]
+    
+    # Radiales de Santa Cruz
+    radiales = [
+        "Radial 10", "Radial 13", "Radial 17½", "Radial 19", "Radial 26", "Radial 27"
+    ]
+    
+    # Anillos de Santa Cruz
+    anillos = [
+        "1er Anillo", "2do Anillo", "3er Anillo", "4to Anillo", "5to Anillo"
+    ]
+    
+    # Calles comunes
+    calles_comunes = [
+        "Calle Sucre", "Calle Bolívar", "Calle Junín", "Calle Potosí", "Calle La Paz",
+        "Calle Cochabamba", "Calle Tarija", "Calle Beni", "Calle Pando", "Calle Oruro",
+        "Calle 21 de Mayo", "Calle Warnes", "Calle Velasco", "Calle Ballivián"
+    ]
+    
+    # Barrios específicos
+    barrios = [
+        "Plan 3000", "Villa 1ro de Mayo", "Equipetrol", "Las Palmas", "Pampa de la Isla",
+        "Barrio Hamacas", "Villa Olímpica", "Barrio Petrolero", "Las Brisas", "Urbari",
+        "Satélite Norte", "Plan Tres Mil", "El Bajío", "Palmasola"
+    ]
+    
+    # Generar dirección aleatoria
+    tipo_direccion = random.choice(['avenida', 'radial', 'anillo', 'calle', 'barrio'])
+    
+    if tipo_direccion == 'avenida':
+        calle = random.choice(calles_principales)
+        numero = random.randint(100, 9999)
+        return f"{calle} #{numero}"
+    
+    elif tipo_direccion == 'radial':
+        radial = random.choice(radiales)
+        numero = random.randint(50, 500)
+        return f"{radial} Km {numero/100:.1f}"
+    
+    elif tipo_direccion == 'anillo':
+        anillo = random.choice(anillos)
+        numero = random.randint(100, 2000)
+        return f"{anillo} #{numero}"
+    
+    elif tipo_direccion == 'calle':
+        calle = random.choice(calles_comunes)
+        numero = random.randint(50, 800)
+        barrio = random.choice(barrios)
+        return f"{calle} #{numero}, {barrio}"
+    
+    else:  # barrio
+        barrio = random.choice(barrios)
+        manzana = random.choice(['A', 'B', 'C', 'D', 'E', 'F'])
+        lote = random.randint(1, 30)
+        return f"Barrio {barrio}, Mz. {manzana} Lote {lote}"
 
 
 # ============================================================================
@@ -239,37 +318,40 @@ def poblar_base_datos():
         # ====================================================================
         print(f"👥 Creando {CANTIDAD_CLIENTES} clientes...")
         cliente_ids = []
+        cliente_password = hash_password("cliente123")  # Misma contraseña para todos
         
         for i in range(CANTIDAD_CLIENTES):
             lat, lng = generar_coordenadas_santa_cruz()
             cursor.execute("""
                 INSERT INTO clientes (
-                    nombre, email, telefono, direccion,
+                    nombre, email, password, telefono, direccion,
                     latitud_cliente, longitud_cliente, referencia_direccion,
                     activo, fecha_creacion, fecha_actualizacion
                 ) VALUES (
-                    %s, %s, %s, %s, %s, %s, %s, %s, %s, %s
+                    %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s
                 ) RETURNING id
             """, (
                 fake.name(),
-                fake.unique.email(),
-                fake.phone_number(),
-                fake.street_address(),
+                f"cliente{i+1}@distria.com",  # Emails similares como repartidores
+                cliente_password,
+                f"+591 {random.randint(6,7)}{random.randint(1000000,9999999)}",  # Números bolivianos
+                generar_direccion_santa_cruz(),  # Direcciones realistas de Santa Cruz
                 lat,
                 lng,
-                fake.secondary_address(),
+                f"Referencia: {fake.sentence(nb_words=6)}",  # Referencias más realistas
                 True,
                 generar_fecha_reciente(180),
                 datetime.now()
             ))
             cliente_ids.append(cursor.fetchone()[0])
             
-            if (i + 1) % 100 == 0:
+            if (i + 1) % 200 == 0:  # Actualizado para mostrar progreso cada 200
                 print(f"   📝 {i + 1}/{CANTIDAD_CLIENTES} clientes creados...")
                 conn.commit()
         
         conn.commit()
-        print(f"✅ {len(cliente_ids)} clientes creados\n")
+        print(f"✅ {len(cliente_ids)} clientes creados")
+        print(f"   🔑 Password para todos: cliente123\n")
         
         # ====================================================================
         # 5. CREAR PRODUCTOS
@@ -366,7 +448,7 @@ def poblar_base_datos():
                 cliente_id,
                 estado,
                 0,  # Se calculará después
-                fake.address(),
+                generar_direccion_santa_cruz(),  # Direcciones realistas para entregas
                 fake.sentence() if random.random() > 0.7 else None,
                 fecha_pedido + timedelta(days=random.randint(1, 5)) if estado in ['ENTREGADO', 'EN_CAMINO'] else None,
                 True,
@@ -494,8 +576,12 @@ def poblar_base_datos():
         print("      Email: admin@distria.com")
         print("      Password: admin123")
         print("\n   🚚 REPARTIDORES:")
-        print("      Email: repartidor1@distria.com hasta repartidor20@distria.com")
+        print(f"      Email: repartidor1@distria.com hasta repartidor{CANTIDAD_REPARTIDORES}@distria.com")
         print("      Password: repartidor123 (para todos)")
+        print("\n   👥 CLIENTES:")
+        print(f"      Email: cliente1@distria.com hasta cliente{CANTIDAD_CLIENTES}@distria.com")
+        print("      Password: cliente123 (para todos)")
+        print(f"      Promedio: {CANTIDAD_PEDIDOS/CANTIDAD_CLIENTES:.1f} pedidos por cliente")
         print("\n🌍 Ubicaciones GPS: Santa Cruz de la Sierra, Bolivia")
         print("=" * 70)
         

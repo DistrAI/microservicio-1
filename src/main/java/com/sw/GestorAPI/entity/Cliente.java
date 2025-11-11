@@ -49,6 +49,14 @@ public class Cliente {
     @Column(name = "referencia_direccion", length = 300)
     private String referenciaDireccion;
 
+    // Campos de autenticación para la app móvil
+    @NotBlank(message = "La contraseña es obligatoria")
+    @Column(nullable = false)
+    private String password;
+
+    @Column(name = "ultimo_acceso")
+    private LocalDateTime ultimoAcceso;
+
     @Builder.Default
     @Column(nullable = false)
     private Boolean activo = true;
@@ -60,4 +68,11 @@ public class Cliente {
     @UpdateTimestamp
     @Column(name = "fecha_actualizacion")
     private LocalDateTime fechaActualizacion;
+
+    /**
+     * Actualiza la fecha del último acceso del cliente
+     */
+    public void actualizarUltimoAcceso() {
+        this.ultimoAcceso = LocalDateTime.now();
+    }
 }

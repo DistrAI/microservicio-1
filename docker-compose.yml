@@ -7,9 +7,9 @@ services:
     network_mode: host
     environment:
       # Configuración de la base de datos Render
-      SPRING_DATASOURCE_URL: jdbc:postgresql://dpg-d48sg3ogjchc73f2ksc0-a.oregon-postgres.render.com:5432/gestorapi_ixn4
+      SPRING_DATASOURCE_URL: jdbc:postgresql://dpg-d49a9fk9c44c73bilt60-a.oregon-postgres.render.com:5432/gestorapi_ij3r
       SPRING_DATASOURCE_USERNAME: admin
-      SPRING_DATASOURCE_PASSWORD: cNi4bxZsyBvD6P2SKnP1A9iJZTWORB5p
+      SPRING_DATASOURCE_PASSWORD: GimjVfMKs8ca2LSryY24otdIMJWl38W2
       SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
       
       # Configuración JPA/Hibernate

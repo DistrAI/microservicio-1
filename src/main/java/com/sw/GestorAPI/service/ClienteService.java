@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.lang.NonNull;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,6 +19,7 @@ import java.util.Optional;
 public class ClienteService {
 
     private final ClienteRepository clienteRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public Page<Cliente> listar(@NonNull Pageable pageable) {
         return clienteRepository.findAll(pageable);
@@ -45,6 +47,12 @@ public class ClienteService {
         if (clienteRepository.existsByEmail(cliente.getEmail())) {
             throw new IllegalArgumentException("Ya existe un cliente con el email: " + cliente.getEmail());
         }
+        
+        // Encriptar la contraseña antes de guardar
+        if (cliente.getPassword() != null) {
+            cliente.setPassword(passwordEncoder.encode(cliente.getPassword()));
+        }
+        
         return clienteRepository.save(cliente);
     }
 
@@ -108,6 +116,45 @@ public class ClienteService {
         existente.setLongitudCliente(input.getLongitudCliente());
         existente.setReferenciaDireccion(input.getReferenciaDireccion());
 
+        return clienteRepository.save(existente);
+    }
+
+    /**
+     * Autentica un cliente con email y password
+     */
+    public Optional<Cliente> autenticarCliente(@NonNull String email, @NonNull String password) {
+        Optional<Cliente> clienteOpt = clienteRepository.findByEmail(email);
+        
+        if (clienteOpt.isPresent()) {
+            Cliente cliente = clienteOpt.get();
+            // Verificar que el cliente esté activo y la contraseña sea correcta
+            if (cliente.getActivo() && passwordEncoder.matches(password, cliente.getPassword())) {
+                // Actualizar último acceso
+                cliente.actualizarUltimoAcceso();
+                clienteRepository.save(cliente);
+                return Optional.of(cliente);
+            }
+        }
+        
+        return Optional.empty();
+    }
+
+    /**
+     * Obtiene un cliente activo por email (para autenticación)
+     */
+    public Optional<Cliente> obtenerClienteActivoPorEmail(@NonNull String email) {
+        return clienteRepository.findByEmailAndActivoTrue(email);
+    }
+
+    /**
+     * Actualiza la contraseña de un cliente
+     */
+    @Transactional
+    public Cliente actualizarPassword(@NonNull Long id, @NonNull String nuevaPassword) {
+        Cliente existente = clienteRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Cliente no encontrado con ID: " + id));
+        
+        existente.setPassword(passwordEncoder.encode(nuevaPassword));
         return clienteRepository.save(existente);
     }
 }

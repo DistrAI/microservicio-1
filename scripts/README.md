@@ -170,11 +170,11 @@ Verifica que la URL de la base de datos en `seed_database.py` sea correcta:
 
 ```python
 DB_CONFIG = {
-    'host': 'dpg-d48sg3ogjchc73f2ksc0-a.oregon-postgres.render.com',
+    'host': 'dpg-d49a9fk9c44c73bilt60-a.oregon-postgres.render.com',
     'port': 5432,
-    'database': 'gestorapi_ixn4',
+    'database': 'gestorapi_ij3r',
     'user': 'admin',
-    'password': 'cNi4bxZsyBvD6P2SKnP1A9iJZTWORB5p'
+    'password': 'GimjVfMKs8ca2LSryY24otdIMJWl38W2'
 }
 ```
 

@@ -2,9 +2,11 @@ package com.sw.GestorAPI.resolver;
 
 import com.sw.GestorAPI.dto.ActualizarClienteInput;
 import com.sw.GestorAPI.dto.ActualizarUbicacionClienteInput;
+import com.sw.GestorAPI.dto.AuthClienteResponse;
 import com.sw.GestorAPI.dto.ClientePageResponse;
 import com.sw.GestorAPI.dto.CrearClienteInput;
 import com.sw.GestorAPI.entity.Cliente;
+import com.sw.GestorAPI.security.JwtService;
 import com.sw.GestorAPI.service.ClienteService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +26,7 @@ import org.springframework.lang.NonNull;
 public class ClienteResolver {
 
     private final ClienteService clienteService;
+    private final JwtService jwtService;
 
     // =====================
     // QUERIES
@@ -95,6 +98,7 @@ public class ClienteResolver {
         Cliente c = Cliente.builder()
                 .nombre(input.getNombre())
                 .email(input.getEmail())
+                .password(input.getPassword())
                 .telefono(input.getTelefono())
                 .direccion(input.getDireccion())
                 .latitudCliente(input.getLatitudCliente())
@@ -141,5 +145,32 @@ public class ClienteResolver {
     @PreAuthorize("hasRole('ADMIN')")
     public Cliente actualizarUbicacionCliente(@Argument @NonNull Long id, @Argument ActualizarUbicacionClienteInput input) {
         return clienteService.actualizarUbicacionCliente(id, input);
+    }
+
+    /**
+     * Login específico para clientes desde la aplicación móvil
+     * No requiere autorización previa ya que es el punto de entrada
+     */
+    @MutationMapping
+    public AuthClienteResponse loginCliente(@Argument @NonNull String email, @Argument @NonNull String password) {
+        log.info("Intento de login de cliente con email: {}", email);
+        
+        return clienteService.autenticarCliente(email, password)
+                .map(cliente -> {
+                    String token = jwtService.generateToken(cliente.getEmail(), cliente.getId(), "CLIENTE");
+                    log.info("Login exitoso para cliente: {}", cliente.getEmail());
+                    
+                    return AuthClienteResponse.builder()
+                            .token(token)
+                            .tipo("Bearer")
+                            .clienteId(cliente.getId())
+                            .email(cliente.getEmail())
+                            .nombre(cliente.getNombre())
+                            .build();
+                })
+                .orElseThrow(() -> {
+                    log.warn("Fallo en autenticación para email: {}", email);
+                    return new IllegalArgumentException("Credenciales inválidas");
+                });
     }
 }
